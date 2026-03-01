@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026年度 法人化ロードマップ — 年商5,000万円計画</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Space+Grotesk:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#07090f;--card:rgba(255,255,255,.04);--border:rgba(255,255,255,.06);--accent:#22d3ee;--accent2:#a78bfa;--warn:#fbbf24;--green:#34d399;--rose:#fb7185}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:#e2e8f0;overflow-x:hidden}
+.font-display{font-family:'Space Grotesk','Noto Sans JP',sans-serif}.text-mono{font-family:'DM Mono',monospace}
+.glass{background:var(--card);border:1px solid var(--border);backdrop-filter:blur(20px)}
+.glow-cyan{box-shadow:0 0 60px rgba(34,211,238,.08)}.glow-violet{box-shadow:0 0 60px rgba(167,139,250,.08)}
+.fade-in{animation:fadeIn .7s ease-out both}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.gradient-text{background:linear-gradient(135deg,#22d3ee,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.progress-bar{background:linear-gradient(90deg,#22d3ee,#a78bfa);border-radius:999px;height:6px}
+.hover-lift{transition:transform .2s,box-shadow .3s}.hover-lift:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.section-line{width:40px;height:3px;border-radius:999px;background:linear-gradient(90deg,#22d3ee,#a78bfa)}
+.tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.timeline-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--accent);background:var(--bg);position:relative;z-index:2}
+.timeline-line{position:absolute;left:5px;top:12px;bottom:0;width:2px;background:var(--border)}
+@media print{body{background:#fff;color:#1e293b}.glass{background:#f8fafc;border:1px solid #e2e8f0}}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- Hero -->
+<div class="max-w-5xl mx-auto px-6 pt-16 pb-8">
+  <header class="text-center mb-16 fade-in">
+    <div class="tag bg-cyan-500/10 text-cyan-400 mb-6">Business Plan 2026</div>
+    <h1 class="text-4xl md:text-6xl font-black font-display tracking-tight mb-4">
+      <span class="gradient-text">年商5,000万円</span><br>
+      <span class="text-white/80">法人化ロードマップ</span>
+    </h1>
+    <p class="text-slate-500 text-sm max-w-lg mx-auto mt-4">2025年の個人事業実績（売上¥622万）を基に、法人化後の事業計画・資金シミュレーションを策定</p>
+  </header>
+
+  <!-- 2025実績 vs 2026目標 -->
+  <section class="mb-16 fade-in" style="animation-delay:.1s">
+    <div class="flex items-center gap-3 mb-8"><div class="section-line"></div><h2 class="text-xs font-black text-slate-500 uppercase tracking-[.3em]">Overview — 現在地と目標</h2></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="glass rounded-3xl p-8 glow-cyan hover-lift">
+        <div class="tag bg-slate-500/20 text-slate-400 mb-4">2025 Actual（個人事業）</div>
+        <div class="text-3xl font-black text-mono text-white mb-2">¥6,223,838</div>
+        <div class="text-xs text-slate-500 mb-6">年間売上 / 利益率 3.0%</div>
+        <div class="space-y-3 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">外注費</span><span class="text-mono text-slate-300">¥1,809,750 <span class="text-slate-600">(29%)</span></span></div>
+          <div class="flex justify-between"><span class="text-slate-500">事業経費</span><span class="text-mono text-slate-300">¥859,141 <span class="text-slate-600">(14%)</span></span></div>
+          <div class="flex justify-between"><span class="text-slate-500">生活関連費</span><span class="text-mono text-slate-300">¥3,061,097 <span class="text-slate-600">(49%)</span></span></div>
+          <div class="flex justify-between"><span class="text-slate-500">手残り</span><span class="text-mono text-emerald-400">¥189,333</span></div>
+        </div>
+      </div>
+      <div class="glass rounded-3xl p-8 glow-violet hover-lift border border-violet-500/20">
+        <div class="tag bg-violet-500/20 text-violet-400 mb-4">2026 Target（法人）</div>
+        <div class="text-3xl font-black text-mono text-white mb-2">¥50,000,000</div>
+        <div class="text-xs text-violet-400 mb-6">年商目標 / 目標利益率 45%</div>
+        <div class="space-y-3 text-xs">
+          <div class="flex justify-between"><span class="text-slate-500">必要月商</span><span class="text-mono text-white font-bold">¥4,166,667</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">前年比</span><span class="text-mono text-violet-400 font-bold">× 8.0倍</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">目標利益</span><span class="text-mono text-emerald-400 font-bold">¥22,500,000</span></div>
+          <div class="flex justify-between"><span class="text-slate-500">月次利益目標</span><span class="text-mono text-emerald-400">¥1,875,000</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 法人P/Lシミュレーション -->
+  <section class="mb-16 fade-in" style="animation-delay:.2s">
+    <div class="flex items-center gap-3 mb-8"><div class="section-line"></div><h2 class="text-xs font-black text-slate-500 uppercase tracking-[.3em]">法人P/L シミュレーション</h2></div>
+    <div class="glass rounded-3xl p-8 md:p-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div>
+          <h3 class="text-lg font-black text-white mb-6">年間損益計算（目標ベース）</h3>
+          <div class="space-y-0">
+            <!-- 売上 -->
+            <div class="flex justify-between items-center py-3 border-b border-white/5">
+              <span class="text-sm font-bold text-cyan-400">売上高</span>
+              <span class="text-lg font-black text-mono text-cyan-400">¥50,000,000</span>
+            </div>
+            <!-- 原価 -->
+            <div class="py-3 border-b border-white/5">
+              <div class="flex justify-between items-center mb-2"><span class="text-sm text-slate-400">外注費（売上の25%）</span><span class="text-mono text-rose-400">-¥12,500,000</span></div>
+              <div class="flex justify-between items-center"><span class="text-sm font-bold text-white">粗利益</span><span class="text-mono font-bold text-white">¥37,500,000 <span class="text-slate-600 text-xs">(75%)</span></span></div>
+            </div>
+            <!-- 販管費 -->
+            <div class="py-3 border-b border-white/5 space-y-1.5">
+              <div class="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-2">販管費</div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">役員報酬</span><span class="text-mono text-xs text-slate-300">-¥6,000,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">オフィス・家賃</span><span class="text-mono text-xs text-slate-300">-¥1,200,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">サブスク・ツール</span><span class="text-mono text-xs text-slate-300">-¥600,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">機材・設備</span><span class="text-mono text-xs text-slate-300">-¥1,000,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">交通・出張</span><span class="text-mono text-xs text-slate-300">-¥1,200,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">接待・会議</span><span class="text-mono text-xs text-slate-300">-¥1,000,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">広告・マーケ</span><span class="text-mono text-xs text-slate-300">-¥2,000,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">社保・保険</span><span class="text-mono text-xs text-slate-300">-¥1,500,000</span></div>
+              <div class="flex justify-between"><span class="text-xs text-slate-500">その他経費</span><span class="text-mono text-xs text-slate-300">-¥500,000</span></div>
+              <div class="flex justify-between pt-2 border-t border-white/5"><span class="text-xs font-bold text-slate-400">販管費合計</span><span class="text-mono text-xs font-bold text-rose-400">-¥15,000,000</span></div>
+            </div>
+            <!-- 営業利益 -->
+            <div class="flex justify-between items-center py-4 bg-emerald-500/5 rounded-xl px-4 mt-2">
+              <span class="font-black text-emerald-400">営業利益</span>
+              <div class="text-right">
+                <span class="text-2xl font-black text-mono text-emerald-400">¥22,500,000</span>
+                <span class="block text-[10px] text-emerald-600 mt-1">利益率 45%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-white mb-6">支出構成</h3>
+          <div style="height:280px"><canvas id="plChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 役員報酬シミュレーション -->
+  <section class="mb-16 fade-in" style="animation-delay:.25s">
+    <div class="flex items-center gap-3 mb-8"><div class="section-line"></div><h2 class="text-xs font-black text-slate-500 uppercase tracking-[.3em]">役員報酬 — 生活費シミュレーション</h2></div>
+    <div class="glass rounded-3xl p-8 md:p-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white/[.03] rounded-2xl p-6 text-center">
+          <div class="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-2">2025年 生活費実績</div>
+          <div class="text-2xl font-black text-mono text-white">¥255,091<span class="text-sm text-slate-600">/月</span></div>
+          <div class="text-[10px] text-slate-600 mt-1">年間 ¥3,061,097</div>
+        </div>
+        <div class="bg-cyan-500/5 rounded-2xl p-6 text-center border border-cyan-500/10">
+          <div class="text-[10px] text-cyan-400 uppercase tracking-widest font-bold mb-2">推奨 役員報酬</div>
+          <div class="text-2xl font-black text-mono text-cyan-400">¥500,000<span class="text-sm text-cyan-600">/月</span></div>
+          <div class="text-[10px] text-slate-500 mt-1">年間 ¥6,000,000（額面）</div>
+        </div>
+        <div class="bg-white/[.03] rounded-2xl p-6 text-center">
+          <div class="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-2">手取り目安</div>
+          <div class="text-2xl font-black text-mono text-white">¥390,000<span class="text-sm text-slate-600">/月</span></div>
+          <div class="text-[10px] text-slate-500 mt-1">社保・税引後（概算）</div>
+        </div>
+      </div>
+      <div class="bg-white/[.02] rounded-2xl p-6">
+        <h4 class="text-xs font-bold text-slate-400 mb-4">月額生活費の内訳（2025年実績ベース）</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div><div class="text-lg font-black text-mono text-white">¥77,500</div><div class="text-[10px] text-slate-600">家賃</div></div>
+          <div><div class="text-lg font-black text-mono text-white">¥51,600</div><div class="text-[10px] text-slate-600">固定費(携帯/返済等)</div></div>
+          <div><div class="text-lg font-black text-mono text-white">¥36,300</div><div class="text-[10px] text-slate-600">交通費</div></div>
+          <div><div class="text-lg font-black text-mono text-white">¥88,000</div><div class="text-[10px] text-slate-600">生活・娯楽</div></div>
+        </div>
+        <div class="mt-4 p-3 bg-amber-500/5 rounded-xl border border-amber-500/10">
+          <p class="text-[11px] text-amber-400">💡 役員報酬¥50万なら手取り約¥39万。2025年の生活費¥25.5万をカバーしつつ、月¥13万の貯蓄・投資余力が生まれます。交通費・接待費は法人経費で処理できるため、個人負担はさらに軽くなります。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 月商ロードマップ -->
+  <section class="mb-16 fade-in" style="animation-delay:.3s">
+    <div class="flex items-center gap-3 mb-8"><div class="section-line"></div><h2 class="text-xs font-black text-slate-500 uppercase tracking-[.3em]">月商ロードマップ — ¥5,000万への道</h2></div>
+    <div class="glass rounded-3xl p-8 md:p-10">
+      <div style="height:340px" class="mb-8"><canvas id="roadmapChart"></canvas></div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white/[.03] rounded-2xl p-5">
+          <div class="tag bg-cyan-500/10 text-cyan-400 mb-3">Q1 (4-6月)</div>
+          <div class="text-xl font-black text-mono text-white mb-1">¥200万<span class="text-xs text-slate-600">/月</span></div>
+          <div class="text-[10px] text-slate-500 leading-relaxed mt-2">法人設立・既存クライアント移行。YouTube本格始動。月商¥200万の安定基盤を構築。</div>
+          <div class="mt-3"><div class="text-[10px] text-slate-600 mb-1">四半期売上: ¥600万</div><div class="progress-bar" style="width:12%"></div></div>
+        </div>
+        <div class="bg-white/[.03] rounded-2xl p-5">
+          <div class="tag bg-violet-500/10 text-violet-400 mb-3">Q2 (7-9月)</div>
+          <div class="text-xl font-black text-mono text-white mb-1">¥350万<span class="text-xs text-slate-600">/月</span></div>
+          <div class="text-[10px] text-slate-500 leading-relaxed mt-2">YouTube収益化・企業案件開始。新規クライアント獲得で月商¥350万へ。外注チーム拡大。</div>
+          <div class="mt-3"><div class="text-[10px] text-slate-600 mb-1">四半期売上: ¥1,050万</div><div class="progress-bar" style="width:33%"></div></div>
+        </div>
+        <div class="bg-white/[.03] rounded-2xl p-5">
+          <div class="tag bg-amber-500/10 text-amber-400 mb-3">Q3 (10-12月)</div>
+          <div class="text-xl font-black text-mono text-white mb-1">¥550万<span class="text-xs text-slate-600">/月</span></div>
+          <div class="text-[10px] text-slate-500 leading-relaxed mt-2">複数収益源の確立。YouTube広告+企業タイアップ+受託制作。月商¥550万体制。</div>
+          <div class="mt-3"><div class="text-[10px] text-slate-600 mb-1">四半期売上: ¥1,650万</div><div class="progress-bar" style="width:66%"></div></div>
+        </div>
+        <div class="bg-violet-500/5 rounded-2xl p-5 border border-violet-500/10">
+          <div class="tag bg-emerald-500/10 text-emerald-400 mb-3">Q4 (1-3月)</div>
+          <div class="text-xl font-black text-mono text-white mb-1">¥700万<span class="text-xs text-slate-600">/月</span></div>
+          <div class="text-[10px] text-slate-500 leading-relaxed mt-2">年商¥5,000万ペース達成。ストック型収益（月額顧問・サブスク）の比率を30%以上に。</div>
+          <div class="mt-3"><div class="text-[10px] text-slate-600 mb-1">四半期売上: ¥1,700万 → 年間¥5,000万</div><div class="progress-bar" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 外注費の分析と計画 -->
+  <section class="mb-16 fade-in" style="animation-delay:.35s">
+    <div class="flex items-center gap-3 mb-8"><div class="section-line"></div><h2 class="text-xs font-black text-slate-500 uppercase tracking-[.3em]">外注費 — スケール戦略</h2></div>
+    <div class="glass rounded-3xl p-8 md:p-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="text-sm font-black text-white mb-4">2025年 外注実績</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center py-2 border-b border-white/5">
+              <span class="text-xs text-slate-400">スズキ ヨシヒロ</span><span class="text-mono text-xs text-white">¥774,000 <span class="text-slate-600">(月平均¥64,500)</span></span></div>
+            <div class="flex justify-between items-center py-2 border-b border-white/5">
+              <span class="text-xs text-slate-400">トモムネ ハヤト</span><span class="text-mono text-xs text-white">¥399,000 <span class="text-slate-600">(月平均¥33,250)</span></span></div>
+            <div class="flex justify-between items-center py-2 border-b border-white/5">
+              <span class="text-xs text-slate-400">シオザキ ユウマ</span><span class="text-mono text-xs text-white">¥240,000 <span class="text-slate-600">(月¥30,000)</span></span></div>
+            <div class="flex justify-between items-center py-2 border-b border-white/5">
+              <span class="text-xs text-slate-400">ナカムラ アキノリ</span><span class="text-mono text-xs text-white">¥95,000</span></div>
+            <div class="flex justify-between items-center py-2 border-b border-white/5">
+              <span class="text-xs text-slate-400">その他4名</span><span class="text-mono text-xs text-white">¥301,750</span></div>
+            <div class="flex justify-between items-center py-3 bg-white/[.03] rounded-xl px-4">
+              <span class="text-xs font-bold text-white">合計</span><span class="text-mono text-sm font-bold text-orange-400">¥1,809,750 <span class="text-xs text-slate-600">(月¥150,812)</span></span></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-sm font-black text-white mb-4">2026年 外注計画（売上連動）</h3>
+          <div class="space-y-4">
+            <div class="bg-white/[.03] rounded-xl p-4">
+              <div class="flex justify-between mb-1"><span class="text-xs text-slate-400">外注費率の目標</span><span class="text-mono text-xs text-cyan-400 font-bold">25%</span></div>
+              <p class="text-[10px] text-slate-600">2025年は29%。規模拡大で効率化し25%に。</p>
+            </div>
+            <div class="bg-white/[.03] rounded-xl p-4">
+              <div class="flex justify-between mb-1"><span class="text-xs text-slate-400">Q1 外注費</span><span class="text-mono text-xs text-white">¥50万/月</span></div>
+              <div class="flex justify-between mb-1"><span class="text-xs text-slate-400">Q2 外注費</span><span class="text-mono text-xs text-white">¥87.5万/月</span></div>
+              <div class="flex justify-between mb-1"><span class="text-xs text-slate-400">Q3 外注費</span><span class="text-mono text-xs text-white">¥137.5万/月</span></div>
+              <div class="flex justify-between mb-1"><span class="text-xs text-slate-400">Q4 外注費</span><span class="text-mono text-xs text-white">¥175万/月</span></div>
+            </div>
+            <div class="bg-orange-500/5 rounded-xl p-4 border border-orange-500/10">
+              <div class="flex justify-between"><span class="text-xs font-bold text-orange-400">年間外注費予算</span><span class="text-mono text-sm font-bold text-orange-400">¥12,500,000</span></div>
+              <p class="text-[10px] text-slate-500 mt-1">動画編集者2〜3名 + デザイナー + ライター体制</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 必要売上の逆算 -->
+  <section class="mb-16 fade-in" style="animation-delay:.4s">
+    <div class="flex items-center gap-3 mb-8"><div class="section-line"></div><h2 class="text-xs font-black text-slate-500 uppercase tracking-[.3em]">逆算サマリー</h2></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass rounded-2xl p-6 text-center hover-lift">
+        <div class="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-2">月商目標</div>
+        <div class="text-2xl font-black text-mono gradient-text">¥417万</div>
+        <div class="text-[10px] text-slate-600 mt-1">平均（段階的に成長）</div>
+      </div>
+      <div class="glass rounded-2xl p-6 text-center hover-lift">
+        <div class="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-2">月間経費</div>
+        <div class="text-2xl font-black text-mono text-rose-400">¥229万</div>
+        <div class="text-[10px] text-slate-600 mt-1">外注+販管費+役員報酬</div>
+      </div>
+      <div class="glass rounded-2xl p-6 text-center hover-lift">
+        <div class="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-2">損益分岐点</div>
+        <div class="text-2xl font-black text-mono text-amber-400">¥152万</div>
+        <div class="text-[10px] text-slate-600 mt-1">固定費のみで計算</div>
+      </div>
+      <div class="glass rounded-2xl p-6 text-center hover-lift">
+        <div class="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-2">年間手残り</div>
+        <div class="text-2xl font-black text-mono text-emerald-400">¥2,250万</div>
+        <div class="text-[10px] text-slate-600 mt-1">法人内部留保（税引前）</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center py-12 text-slate-700">
+    <p class="text-[10px] font-black uppercase tracking-[.5em]">© 2026 Business Roadmap — Confidential</p>
+  </footer>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  // P/L Donut
+  new Chart(document.getElementById('plChart').getContext('2d'),{type:'doughnut',data:{
+    labels:['外注費','役員報酬','オフィス','ツール','機材','交通・出張','接待','広告','社保','その他','営業利益'],
+    datasets:[{data:[12500000,6000000,1200000,600000,1000000,1200000,1000000,2000000,1500000,500000,22500000],
+      backgroundColor:['#fb923c','#22d3ee','#64748b','#ec4899','#8b5cf6','#06b6d4','#3b82f6','#f59e0b','#6366f1','#94a3b8','#34d399'],borderWidth:2,borderColor:'#07090f'}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{family:"'Noto Sans JP'",size:10,weight:'bold'},padding:8,usePointStyle:true}},
+    tooltip:{callbacks:{label:c=>`${c.label}: ¥${(c.parsed/10000).toFixed(0)}万 (${((c.parsed/50000000)*100).toFixed(0)}%)`}}}}});
+
+  // Roadmap Line Chart
+  const months=['4月','5月','6月','7月','8月','9月','10月','11月','12月','1月','2月','3月'];
+  const target=[200,200,200,350,350,350,550,550,550,700,700,700];
+  const cumulative=[];let s=0;target.forEach(v=>{s+=v;cumulative.push(s)});
+  new Chart(document.getElementById('roadmapChart').getContext('2d'),{type:'bar',data:{labels:months,datasets:[
+    {type:'bar',label:'月商(万)',data:target,backgroundColor:'rgba(34,211,238,.3)',borderColor:'#22d3ee',borderWidth:1,borderRadius:6,yAxisID:'y'},
+    {type:'line',label:'累計(万)',data:cumulative,borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.1)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#a78bfa',yAxisID:'y1'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{family:"'Noto Sans JP'",size:11,weight:'bold'}}}},
+    scales:{y:{position:'left',ticks:{callback:v=>v+'万',color:'#64748b',font:{family:"'DM Mono'",size:10}},grid:{color:'rgba(255,255,255,.03)'}},
+      y1:{position:'right',ticks:{callback:v=>v+'万',color:'#a78bfa',font:{family:"'DM Mono'",size:10}},grid:{display:false}},
+      x:{ticks:{color:'#94a3b8',font:{family:"'Noto Sans JP'",weight:'bold',size:11}},grid:{display:false}}}}});
+});
+</script>
+</body>
+</html>

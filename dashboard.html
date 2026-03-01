@@ -308,8 +308,8 @@ function vOverview(){
     const profit=d.rev-d.out;const rate=d.rev>0?((profit/d.rev)*100).toFixed(0)+'%':'-';
     h+=`<tr><td style="font-weight:700">${name}</td><td>${d.tasks.length}</td><td>${d.active}</td><td style="color:var(--ok)">${d.done}</td>
     <td class="right mono" style="color:var(--ac)">${J(d.rev)}</td><td class="right mono" style="color:var(--wn)">${J(d.out)}</td>
-    <td class="right mono" style="color:${profit>=0?'var(--ok)':'var(--ng)'">${J(profit)}</td>
-    <td><span class="pill" style="background:${profit>=0?'var(--acG)':'rgba(251,113,133,.15)'};color:${profit>=0?'var(--ok)':'var(--ng)'">${rate}</span></td></tr>`;
+    <td class="right mono" style="color:${profit>=0?'var(--ok)':'var(--ng)'}">${J(profit)}</td>
+    <td><span class="pill" style="background:${profit>=0?'var(--acG)':'rgba(251,113,133,.15)'};color:${profit>=0?'var(--ok)':'var(--ng)'}">${rate}</span></td></tr>`;
   });
   h+='</tbody></table></div>';
 
@@ -397,7 +397,7 @@ function vProjects(){
         <td class="mono" style="font-size:10px">${t.deadline||'-'}</td>
         <td class="right mono" style="color:var(--ac)">${J(t.revenue||0)}</td>
         <td class="right mono" style="color:var(--wn)">${J(t.outsourceCost||0)}</td>
-        <td class="right mono" style="color:${p>=0?'var(--ok)':'var(--ng)'">${J(p)}</td></tr>`;
+        <td class="right mono" style="color:${p>=0?'var(--ok)':'var(--ng)'}">${J(p)}</td></tr>`;
     });
     h+='</tbody></table></div>';
   });

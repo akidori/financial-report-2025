@@ -5,33 +5,29 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Bird Flip Inc. — 事業計画ダッシュボード</title>
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
 :root,[data-theme="dark"]{
-  --bg:#070b12;--bg2:#0c1119;--card:rgba(255,255,255,0.04);--glass:rgba(255,255,255,0.06);
-  --bd:rgba(255,255,255,0.08);--bd2:rgba(255,255,255,0.04);
-  --tx:#eaf0f6;--tx2:#8da4b8;--txM:#5a7080;
-  --ac:#5eead4;--acG:rgba(94,234,212,0.15);--ac2:#a78bfa;
-  --ok:#34d399;--ng:#fb7185;--wn:#fbbf24;--info:#60a5fa;
-  --R:16px;--Rs:12px;
+--bg:#070b12;--bg2:#0c1119;--card:rgba(255,255,255,0.04);--glass:rgba(255,255,255,0.06);
+--bd:rgba(255,255,255,0.08);--bd2:rgba(255,255,255,0.04);
+--tx:#eaf0f6;--tx2:#8da4b8;--txM:#5a7080;
+--ac:#5eead4;--acG:rgba(94,234,212,0.12);--ac2:#a78bfa;
+--ok:#34d399;--ng:#fb7185;--wn:#fbbf24;--info:#60a5fa;
+--inputBg:rgba(255,255,255,0.05);
 }
 [data-theme="light"]{
-  --bg:#f0f7fc;--bg2:#e8f0f6;--card:rgba(255,255,255,0.7);--glass:rgba(255,255,255,0.5);
-  --bd:rgba(56,152,204,0.12);--bd2:rgba(56,152,204,0.06);
-  --tx:#1a2e3e;--tx2:#5a7890;--txM:#8aa0b0;
-  --ac:#2994cc;--acG:rgba(41,148,204,0.12);--ac2:#7c3aed;
-  --ok:#059669;--ng:#e11d48;--wn:#d97706;--info:#2563eb;
+--bg:#f0f7fc;--bg2:#e8f0f6;--card:rgba(255,255,255,0.7);--glass:rgba(255,255,255,0.5);
+--bd:rgba(56,152,204,0.12);--bd2:rgba(56,152,204,0.06);
+--tx:#1a2e3e;--tx2:#5a7890;--txM:#8aa0b0;
+--ac:#2994cc;--acG:rgba(41,148,204,0.12);--ac2:#7c3aed;
+--ok:#059669;--ng:#e11d48;--wn:#d97706;--info:#2563eb;
+--inputBg:rgba(0,0,0,0.04);
 }
-*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Plus Jakarta Sans','M PLUS Rounded 1c',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
 .mono{font-family:'JetBrains Mono',monospace;letter-spacing:-0.02em}
-
-/* Layout */
 .app{display:flex;min-height:100vh}
-.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--bd);padding:20px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .3s}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--bd);padding:20px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50}
 .main{margin-left:220px;flex:1;padding:24px 32px;min-height:100vh}
 .sidebar .logo{padding:0 20px 20px;font-size:14px;font-weight:800;color:var(--ac);letter-spacing:-.02em}
 .sidebar .logo small{display:block;font-size:9px;color:var(--txM);font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
@@ -40,110 +36,100 @@ body{font-family:'Plus Jakarta Sans','M PLUS Rounded 1c',system-ui,sans-serif;ba
 .nav-item.active{color:var(--ac);background:var(--acG);border-left-color:var(--ac)}
 .nav-item .icon{width:18px;text-align:center;font-size:13px}
 .nav-bottom{margin-top:auto;padding:12px 20px;border-top:1px solid var(--bd)}
-
-/* Cards */
-.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--R);padding:20px;backdrop-filter:blur(12px);transition:transform .15s,box-shadow .15s}
-.card:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:20px;backdrop-filter:blur(12px)}
 .card-title{font-size:10px;font-weight:700;color:var(--txM);text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px}
 .card-value{font-size:28px;font-weight:800;letter-spacing:-.03em}
 .card-sub{font-size:10px;color:var(--tx2);margin-top:4px}
-
-/* Grid */
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:16px}
-
-/* Section */
 .section{margin-bottom:28px}
-.section-head{display:flex;align-items:center;gap:8px;margin-bottom:16px}
-.section-dot{width:8px;height:8px;border-radius:50%}
-.section-title{font-size:13px;font-weight:700;letter-spacing:-.01em}
-
-/* Table */
 .tbl{width:100%;border-collapse:collapse;font-size:11px}
 .tbl th{text-align:left;padding:8px 12px;font-size:9px;font-weight:700;color:var(--txM);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--bd)}
 .tbl td{padding:8px 12px;border-bottom:1px solid var(--bd2)}
 .tbl tr:hover td{background:var(--glass)}
-.tbl .right{text-align:right}
-
-/* Pill */
+.tbl .r{text-align:right}
 .pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:9px;font-weight:700}
-
-/* Progress */
 .pbar{height:6px;border-radius:99px;background:var(--glass);overflow:hidden}
-.pbar-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.22,1,.36,1)}
-
-/* Login */
-.login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999}
-.login-box{text-align:center;padding:40px}
-.login-box h1{font-size:24px;font-weight:800;color:var(--ac);margin-bottom:4px}
-.login-box p{font-size:12px;color:var(--tx2);margin-bottom:24px}
-.btn{padding:10px 24px;border-radius:var(--Rs);border:1px solid var(--bd);background:var(--glass);color:var(--tx);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.pbar-fill{height:100%;border-radius:99px;transition:width .6s}
+.btn{padding:8px 20px;border-radius:12px;border:1px solid var(--bd);background:var(--glass);color:var(--tx);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
 .btn:hover{background:var(--acG);border-color:var(--ac)}
 .btn-ac{background:var(--ac);color:#070b12;border-color:var(--ac)}
-.btn-ac:hover{opacity:.9}
 .btn-sm{padding:5px 12px;font-size:10px}
-
-/* Chart container */
-.chart-wrap{position:relative}
-
-/* Status dot */
-.sdot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
-
-/* Responsive */
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0;padding:16px}
-  .grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}
-  .grid-1-2,.grid-2{grid-template-columns:1fr}
-  .mob-toggle{display:flex!important}
-}
-.mob-toggle{display:none;position:fixed;top:12px;left:12px;z-index:60;width:36px;height:36px;border-radius:10px;background:var(--card);border:1px solid var(--bd);align-items:center;justify-content:center;cursor:pointer;font-size:16px;backdrop-filter:blur(8px)}
-
-/* Animations */
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.fade{animation:fadeUp .5s ease-out both}
-.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}
+.login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column}
+.sim-input{background:var(--inputBg);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;font-size:13px;color:var(--tx);font-family:'JetBrains Mono',monospace;width:120px;text-align:right;outline:none}
+.sim-input:focus{border-color:var(--ac)}
+.sim-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd2)}
+.sim-label{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.sim-hint{font-size:9px;color:var(--txM)}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:16px}.grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<div class="mob-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
-
 <div class="app">
-  <nav class="sidebar" id="sidebar"></nav>
-  <div class="main" id="main">
-    <div class="login-overlay" id="login-screen">
-      <div class="login-box">
-        <h1>Bird Flip Inc.</h1>
-        <p>事業計画ダッシュボード</p>
-        <small style="display:block;color:var(--txM);font-size:10px;margin-bottom:16px">BirdFlipと同じGoogleアカウントでログイン</small>
-        <button class="btn btn-ac" onclick="doLogin()" style="font-size:14px;padding:12px 32px">🔑 Googleでログイン</button>
-      </div>
-    </div>
-    <div id="content" style="display:none"></div>
-  </div>
+<nav class="sidebar" id="sidebar"></nav>
+<div class="main">
+<div class="login-overlay" id="login-screen">
+<div style="text-align:center">
+<div style="font-size:24px;font-weight:800;color:var(--ac);margin-bottom:4px">Bird Flip Inc.</div>
+<div style="font-size:12px;color:var(--tx2);margin-bottom:6px">事業計画ダッシュボード</div>
+<div style="font-size:10px;color:var(--txM);margin-bottom:20px">BirdFlipと同じGoogleアカウントでログイン</div>
+<button class="btn btn-ac" id="login-btn" style="font-size:14px;padding:12px 32px">🔑 Googleでログイン</button>
+<div id="login-status" style="margin-top:12px;font-size:10px;color:var(--tx2)"></div>
+</div>
+</div>
+<div id="content" style="display:none"></div>
+</div>
 </div>
 
 <script>
-// ─── Firebase ───
-const firebaseConfig={apiKey:"AIzaSyAjBviZ8Pcg3fX8ti2y3y1nMcBz_Dps7mw",authDomain:"birdstraike.firebaseapp.com",projectId:"birdstraike",storageBucket:"birdstraike.firebasestorage.app",messagingSenderId:"177151250196",appId:"1:177151250196:web:21aefe5c0a53dcb82b7c01"};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(),db=firebase.firestore();
+// ─── Error boundary ───
+window.onerror=function(msg,url,line){
+  var el=document.getElementById('login-status');
+  if(el)el.textContent='Error: '+msg+' (line '+line+')';
+  console.error(msg,url,line);
+};
+
+// ─── Firebase init ───
+var fbApp,auth,db,fbUser=null,currentWsId=null,wsUnsub=null;
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+try{
+  fbApp=firebase.initializeApp({apiKey:"AIzaSyAjBviZ8Pcg3fX8ti2y3y1nMcBz_Dps7mw",authDomain:"birdstraike.firebaseapp.com",projectId:"birdstraike",storageBucket:"birdstraike.firebasestorage.app",messagingSenderId:"177151250196",appId:"1:177151250196:web:21aefe5c0a53dcb82b7c01"});
+  auth=firebase.auth();db=firebase.firestore();
+  console.log('Firebase OK');
+}catch(e){
+  document.getElementById('login-status').textContent='Firebase init error: '+e.message;
+}
 
 // ─── State ───
-let fbUser=null,currentWsId=null,wsUnsub=null;
-let S={tasks:[],projects:[],goals:{},projDetail:{},completed:[],co:{},cl:{}};
-let view='overview';
-const J=v=>'¥'+(v||0).toLocaleString();
-const pct=(v,t)=>t>0?((v/t)*100).toFixed(1)+'%':'0%';
+var S={tasks:[],projects:[],goals:{},projDetail:{},completed:[],co:{},cl:{}};
+var view='overview';
+// Monthly simulation state
+var simData={
+  revenue:4166667,
+  outsourceRate:25,
+  salary:500000,
+  office:100000,
+  tools:50000,
+  insurance:125000,
+  ad:166667,
+  other:42000
+};
+// Try load saved sim
+try{var saved=localStorage.getItem('bf-sim');if(saved)simData=JSON.parse(saved);}catch(e){}
 
-// 2025 actual data
-const Y2025={
+var J=function(v){return '¥'+(v||0).toLocaleString();};
+var chartInstances={};
+function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
+
+// 2025 data
+var Y2025={
   income:6223838,expense:6034505,net:189333,
-  cats:{外注費用:1809750,家賃:929730,生活娯楽費:1056295,生活固定費:619570,交通費:435502,サブスクツール費:324014,出張旅行費:304517,機材購入費:287111,事業経費:248016,資産運用費:20000},
+  cats:{"外注費用":1809750,"家賃":929730,"生活・娯楽費":1056295,"生活固定費":619570,"交通費":435502,"サブスク・ツール費":324014,"出張・旅行費":304517,"機材購入費":287111,"事業経費":248016,"資産運用費":20000},
   monthly:[
     {m:'1月',i:506000,o:535988},{m:'2月',i:554750,o:617269},{m:'3月',i:513000,o:549640},
     {m:'4月',i:730000,o:502277},{m:'5月',i:395088,o:389891},{m:'6月',i:415000,o:410540},
@@ -151,45 +137,41 @@ const Y2025={
     {m:'10月',i:565000,o:506399},{m:'11月',i:525000,o:584382},{m:'12月',i:480000,o:457860}
   ]
 };
-
-// 2026 targets
-const Y2026={
-  revenue:50000000,profitRate:0.45,
-  quarterly:[
-    {q:'Q1',months:['4月','5月','6月'],target:2000000,outsourceRate:.25},
-    {q:'Q2',months:['7月','8月','9月'],target:3500000,outsourceRate:.25},
-    {q:'Q3',months:['10月','11月','12月'],target:5500000,outsourceRate:.25},
-    {q:'Q4',months:['1月','2月','3月'],target:7000000,outsourceRate:.25}
-  ],
-  fixedCosts:{役員報酬:500000,オフィス:100000,ツール:50000,社保:125000,その他:42000}
-};
-
-const STA={todo:{l:"未着手",c:"#8B9880"},hearing:{l:"ヒアリング",c:"#10B8C8"},plan:{l:"構成",c:"#06a3b1"},shoot:{l:"撮影",c:"#C080D0"},edit:{l:"編集",c:"#18d4e6"},thumb:{l:"サムネ",c:"#A0C8E0"},review:{l:"先方確認",c:"#F0A060"},fix:{l:"修正",c:"#D0B040"},done:{l:"完了",c:"#5CE0B8"},stop:{l:"STOP",c:"#E06060"}};
-const chartInstances={};
-function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
+var STA={todo:{l:"未着手",c:"#8B9880"},hearing:{l:"ヒアリング",c:"#10B8C8"},plan:{l:"構成",c:"#06a3b1"},shoot:{l:"撮影",c:"#C080D0"},edit:{l:"編集",c:"#18d4e6"},thumb:{l:"サムネ",c:"#A0C8E0"},review:{l:"先方確認",c:"#F0A060"},fix:{l:"修正",c:"#D0B040"},done:{l:"完了",c:"#5CE0B8"},stop:{l:"STOP",c:"#E06060"}};
 
 // ─── Auth ───
-async function doLogin(){
-  try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());}
-  catch(e){if(e.code==='auth/popup-blocked')await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());}
-}
-auth.onAuthStateChanged(async user=>{
-  if(!user){document.getElementById('login-screen').style.display='flex';document.getElementById('content').style.display='none';return;}
+document.getElementById('login-btn').addEventListener('click',function(){
+  document.getElementById('login-status').textContent='ログイン中...';
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e){
+    if(e.code==='auth/popup-blocked'){
+      auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+    }else{
+      document.getElementById('login-status').textContent='Error: '+e.message;
+    }
+  });
+});
+
+auth.onAuthStateChanged(function(user){
+  if(!user){
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('content').style.display='none';
+    return;
+  }
   fbUser=user;
   document.getElementById('login-screen').style.display='none';
   document.getElementById('content').style.display='block';
-  const doc=await db.collection('users').doc(user.uid).get();
-  if(doc.exists)currentWsId=doc.data().workspaceId;
-  if(currentWsId)startSync();
-  else{S.tasks=[];S.projects=[];render();}
+  db.collection('users').doc(user.uid).get().then(function(doc){
+    if(doc.exists)currentWsId=doc.data().workspaceId;
+    if(currentWsId)startSync();
+    else{S.tasks=[];S.projects=[];render();}
+  });
 });
 
 function startSync(){
   if(wsUnsub)wsUnsub();
-  const ref=db.collection('workspaces').doc(currentWsId);
-  wsUnsub=ref.onSnapshot(doc=>{
+  wsUnsub=db.collection('workspaces').doc(currentWsId).onSnapshot(function(doc){
     if(!doc.exists)return;
-    const d=doc.data();
+    var d=doc.data();
     if(d.tasks)S.tasks=d.tasks;
     if(d.projects)S.projects=d.projects;
     if(d.goals)S.goals=d.goals;
@@ -205,410 +187,450 @@ function startSync(){
 function render(){renderSidebar();renderContent();}
 
 function renderSidebar(){
-  const items=[
+  var items=[
     {k:'overview',icon:'◎',label:'総合ダッシュボード'},
-    {k:'pl',icon:'▤',label:'法人P/Lシミュレーション'},
+    {k:'sim',icon:'⚙',label:'月間シミュレーション'},
+    {k:'pl',icon:'▤',label:'法人P/L'},
     {k:'roadmap',icon:'◆',label:'月商ロードマップ'},
     {k:'projects',icon:'≡',label:'案件別収益'},
     {k:'costs',icon:'▧',label:'固定費・役員報酬'},
     {k:'kpi',icon:'☆',label:'KPI追跡'},
-    {k:'y2025',icon:'□',label:'2025年実績'},
+    {k:'y2025',icon:'□',label:'2025年実績'}
   ];
-  let h='<div class="logo">Bird Flip Inc.<small>Business Plan Dashboard</small></div>';
-  items.forEach(it=>{
-    h+=`<div class="nav-item ${view===it.k?'active':''}" onclick="view='${it.k}';render()"><span class="icon">${it.icon}</span>${it.label}</div>`;
-  });
-  h+=`<div class="nav-bottom">
-    <div style="font-size:10px;color:var(--txM);margin-bottom:8px">${fbUser?.displayName||'User'}</div>
-    <div style="display:flex;gap:6px">
-      <button class="btn btn-sm" onclick="toggleTheme()">🌓</button>
-      <a href="https://akidori.github.io/birdflip-app/" target="_blank" class="btn btn-sm" style="text-decoration:none">BirdFlip ↗</a>
-    </div>
-  </div>`;
+  var h='<div class="logo">Bird Flip Inc.<small>Business Plan Dashboard</small></div>';
+  for(var i=0;i<items.length;i++){
+    var it=items[i];
+    h+='<div class="nav-item'+(view===it.k?' active':'')+'" onclick="view=\''+it.k+'\';render()"><span class="icon">'+it.icon+'</span>'+it.label+'</div>';
+  }
+  h+='<div class="nav-bottom">';
+  h+='<div style="font-size:10px;color:var(--txM);margin-bottom:8px">'+(fbUser?fbUser.displayName||'User':'')+'</div>';
+  h+='<div style="display:flex;gap:6px">';
+  h+='<button class="btn btn-sm" onclick="toggleTheme()">🌓</button>';
+  h+='<a href="https://akidori.github.io/birdflip-app/" target="_blank" class="btn btn-sm" style="text-decoration:none">BirdFlip ↗</a>';
+  h+='</div></div>';
   document.getElementById('sidebar').innerHTML=h;
 }
 
 function toggleTheme(){
-  const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('dash-theme',t);
   render();
 }
-(function(){const t=localStorage.getItem('dash-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+(function(){var t=localStorage.getItem('dash-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
 
 function renderContent(){
-  const el=document.getElementById('content');
-  switch(view){
-    case'overview':el.innerHTML=vOverview();break;
-    case'pl':el.innerHTML=vPL();break;
-    case'roadmap':el.innerHTML=vRoadmap();break;
-    case'projects':el.innerHTML=vProjects();break;
-    case'costs':el.innerHTML=vCosts();break;
-    case'kpi':el.innerHTML=vKPI();break;
-    case'y2025':el.innerHTML=vY2025();break;
-  }
-  initCharts();
+  var el=document.getElementById('content');
+  if(view==='overview')el.innerHTML=vOverview();
+  else if(view==='sim')el.innerHTML=vSim();
+  else if(view==='pl')el.innerHTML=vPL();
+  else if(view==='roadmap')el.innerHTML=vRoadmap();
+  else if(view==='projects')el.innerHTML=vProjects();
+  else if(view==='costs')el.innerHTML=vCosts();
+  else if(view==='kpi')el.innerHTML=vKPI();
+  else if(view==='y2025')el.innerHTML=vY2025();
+  setTimeout(initCharts,100);
 }
 
-// ─── Computed from BirdFlip data ───
+// ─── Live stats from BirdFlip ───
 function liveStats(){
-  const done=S.tasks.filter(t=>t.status==='done');
-  const active=S.tasks.filter(t=>t.status!=='done'&&t.status!=='stop');
-  const rev=done.reduce((a,t)=>a+(t.revenue||0),0);
-  const out=done.reduce((a,t)=>a+(t.outsourceCost||0),0);
-  const totalRev=S.tasks.reduce((a,t)=>a+(t.revenue||0),0);
-  const totalOut=S.tasks.reduce((a,t)=>a+(t.outsourceCost||0),0);
-  const byProject={};
-  S.tasks.forEach(t=>{
-    const p=t.category||'未分類';
+  var done=[],active=[];
+  for(var i=0;i<S.tasks.length;i++){
+    if(S.tasks[i].status==='done')done.push(S.tasks[i]);
+    else if(S.tasks[i].status!=='stop')active.push(S.tasks[i]);
+  }
+  var rev=0,out=0,totalRev=0,totalOut=0;
+  for(var i=0;i<done.length;i++){rev+=(done[i].revenue||0);out+=(done[i].outsourceCost||0);}
+  for(var i=0;i<S.tasks.length;i++){totalRev+=(S.tasks[i].revenue||0);totalOut+=(S.tasks[i].outsourceCost||0);}
+  var byProject={};
+  for(var i=0;i<S.tasks.length;i++){
+    var t=S.tasks[i],p=t.category||'未分類';
     if(!byProject[p])byProject[p]={rev:0,out:0,done:0,active:0,tasks:[]};
-    byProject[p].tasks.push(t);
-    byProject[p].rev+=(t.revenue||0);
-    byProject[p].out+=(t.outsourceCost||0);
-    if(t.status==='done')byProject[p].done++;
-    else if(t.status!=='stop')byProject[p].active++;
-  });
-  const fixedMonthly=Object.values(Y2026.fixedCosts).reduce((a,v)=>a+v,0);
-  return{done,active,rev,out,totalRev,totalOut,byProject,fixedMonthly,
-    profit:rev-out,totalProfit:totalRev-totalOut,
-    grossMargin:totalRev>0?((totalRev-totalOut)/totalRev*100):0};
+    byProject[p].tasks.push(t);byProject[p].rev+=(t.revenue||0);byProject[p].out+=(t.outsourceCost||0);
+    if(t.status==='done')byProject[p].done++;else if(t.status!=='stop')byProject[p].active++;
+  }
+  return{done:done,active:active,rev:rev,out:out,totalRev:totalRev,totalOut:totalOut,byProject:byProject,
+    profit:rev-out,grossMargin:totalRev>0?((totalRev-totalOut)/totalRev*100):0};
 }
 
-// ─── Views ───
-function vOverview(){
-  const ls=liveStats();
-  const monthTarget=Y2026.quarterly[0].target;
-  const annualTarget=Y2026.revenue;
-  const progressToAnnual=ls.totalRev/annualTarget*100;
-  let h='<div style="margin-bottom:20px" class="fade"><h1 style="font-size:22px;font-weight:800;letter-spacing:-.03em">総合ダッシュボード</h1><p style="font-size:11px;color:var(--tx2)">BirdFlipデータ リアルタイム連携 + 2026年事業計画</p></div>';
+function kpiCard(title,value,sub,color){
+  return '<div class="card"><div class="card-title">'+title+'</div><div class="card-value mono" style="color:'+(color||'var(--tx)')+'">'+value+'</div><div class="card-sub">'+(sub||'')+'</div></div>';
+}
 
-  // KPI Cards
+// ─── Monthly Simulation ───
+function vSim(){
+  var d=simData;
+  var outsource=Math.round(d.revenue*d.outsourceRate/100);
+  var gross=d.revenue-outsource;
+  var fixed=d.salary+d.office+d.tools+d.insurance+d.ad+d.other;
+  var opProfit=gross-fixed;
+  var salaryTake=Math.round(d.salary*0.78);
+  var annual=d.revenue*12;
+  var annualProfit=opProfit*12;
+
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">⚙ 月間シミュレーション</h1>';
+  h+='<p style="font-size:11px;color:var(--tx2)">数字を変えてリアルタイムに損益を確認。変更は自動保存されます。</p></div>';
+
+  // Result cards
   h+='<div class="grid-4 section">';
-  h+=kpiCard('確定売上','',J(ls.rev),'完了案件のみ','var(--ac)','fade d1');
-  h+=kpiCard('パイプライン','',J(ls.totalRev),'全案件（見込含む）','var(--info)','fade d2');
-  h+=kpiCard('粗利益率','',ls.grossMargin.toFixed(1)+'%','外注費控除後','var(--ok)','fade d3');
-  h+=kpiCard('年間目標進捗','',progressToAnnual.toFixed(1)+'%',J(ls.totalRev)+' / '+J(annualTarget),'var(--ac2)','fade d4');
+  var profitColor=opProfit>=0?'var(--ok)':'var(--ng)';
+  h+=kpiCard('月間売上',J(d.revenue),'年間: '+J(annual),'var(--ac)');
+  h+=kpiCard('粗利益',J(gross),'粗利率: '+(d.revenue>0?((gross/d.revenue)*100).toFixed(1):0)+'%','var(--info)');
+  h+=kpiCard('営業利益',J(opProfit),'利益率: '+(d.revenue>0?((opProfit/d.revenue)*100).toFixed(1):0)+'%',profitColor);
+  h+=kpiCard('年間利益',J(annualProfit),'手取り目安: '+J(salaryTake)+'/月',profitColor);
   h+='</div>';
 
-  // Progress bar
-  h+='<div class="card section fade d3"><div class="card-title">年商 ¥5,000万 進捗</div>';
-  h+='<div class="pbar" style="height:10px;margin-bottom:8px"><div class="pbar-fill" style="width:'+Math.min(progressToAnnual,100)+'%;background:linear-gradient(90deg,var(--ac),var(--ac2))"></div></div>';
+  // Profit bar
+  var barPct=d.revenue>0?Math.max(0,Math.min(100,(opProfit/d.revenue)*100)):0;
+  h+='<div class="card section"><div style="display:flex;justify-content:space-between;margin-bottom:8px">';
+  h+='<span style="font-size:11px;font-weight:700">利益率</span>';
+  h+='<span class="mono" style="font-size:11px;font-weight:700;color:'+profitColor+'">'+barPct.toFixed(1)+'%</span></div>';
+  h+='<div class="pbar" style="height:10px"><div class="pbar-fill" style="width:'+barPct+'%;background:linear-gradient(90deg,var(--ac),var(--ac2))"></div></div></div>';
+
+  // Input section
+  h+='<div class="grid-2 section">';
+
+  // Revenue & Outsourcing
+  h+='<div class="card"><div class="card-title">💰 売上・外注</div>';
+  h+=simRow('月間売上目標','revenue',d.revenue,'');
+  h+=simRow('外注費率 (%)','outsourceRate',d.outsourceRate,'%');
+  h+='<div style="padding:10px 0;border-bottom:1px solid var(--bd2);display:flex;justify-content:space-between">';
+  h+='<span style="font-size:12px;font-weight:700;color:var(--wn)">外注費</span>';
+  h+='<span class="mono" style="font-size:13px;font-weight:700;color:var(--wn)">'+J(outsource)+'</span></div>';
+  h+='<div style="padding:10px 0;display:flex;justify-content:space-between">';
+  h+='<span style="font-size:12px;font-weight:800;color:var(--ac)">粗利益</span>';
+  h+='<span class="mono" style="font-size:14px;font-weight:800;color:var(--ac)">'+J(gross)+'</span></div>';
+  h+='</div>';
+
+  // Fixed costs
+  h+='<div class="card"><div class="card-title">📋 固定費（月額）</div>';
+  h+=simRow('役員報酬','salary',d.salary,'');
+  h+=simRow('オフィス・家賃','office',d.office,'');
+  h+=simRow('サブスク・ツール','tools',d.tools,'');
+  h+=simRow('社保・保険','insurance',d.insurance,'');
+  h+=simRow('広告・マーケ','ad',d.ad,'');
+  h+=simRow('その他経費','other',d.other,'');
+  h+='<div style="padding:10px 0;border-top:1px solid var(--bd);display:flex;justify-content:space-between;margin-top:4px">';
+  h+='<span style="font-size:12px;font-weight:800">固定費合計</span>';
+  h+='<span class="mono" style="font-size:14px;font-weight:800;color:var(--ng)">'+J(fixed)+'</span></div>';
+  h+='</div>';
+
+  h+='</div>';
+
+  // Waterfall chart
+  h+='<div class="card section"><div class="card-title">ウォーターフォール（月間P/L）</div>';
+  h+='<div style="height:280px"><canvas id="ch-waterfall"></canvas></div></div>';
+
+  // Annual projection table
+  h+='<div class="card section"><div class="card-title">12ヶ月プロジェクション</div>';
+  h+='<table class="tbl"><thead><tr><th></th><th class="r">月額</th><th class="r">年額</th><th class="r">割合</th></tr></thead><tbody>';
+  var rows=[['売上',d.revenue,'var(--ac)'],['外注費',-outsource,'var(--wn)'],['粗利益',gross,'var(--info)'],['役員報酬',-d.salary,''],['オフィス',-d.office,''],['ツール',-d.tools,''],['社保',-d.insurance,''],['広告',-d.ad,''],['その他',-d.other,''],['固定費計',-fixed,'var(--ng)'],['営業利益',opProfit,profitColor]];
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i],bold=(i===0||i===2||i===9||i===10)?'font-weight:800':'',c=r[2]||'var(--tx2)';
+    var pctVal=d.revenue>0?((Math.abs(r[1])/d.revenue)*100).toFixed(1)+'%':'-';
+    if(i===0)pctVal='100%';
+    h+='<tr><td style="'+bold+'">'+r[0]+'</td><td class="r mono" style="'+bold+';color:'+c+'">'+(r[1]<0?'-':'')+J(Math.abs(r[1]))+'</td>';
+    h+='<td class="r mono" style="'+bold+';color:'+c+'">'+(r[1]<0?'-':'')+J(Math.abs(r[1]*12))+'</td>';
+    h+='<td class="r" style="font-size:10px;color:var(--tx2)">'+pctVal+'</td></tr>';
+  }
+  h+='</tbody></table></div>';
+
+  return h;
+}
+
+function simRow(label,key,val,suffix){
+  var h='<div class="sim-row"><span class="sim-label">'+label+'</span>';
+  h+='<div style="display:flex;align-items:center;gap:4px">';
+  h+='<input class="sim-input" type="number" value="'+val+'" onchange="updateSim(\''+key+'\',this.value)" onfocus="this.select()">';
+  if(suffix)h+='<span style="font-size:11px;color:var(--txM)">'+suffix+'</span>';
+  h+='</div></div>';
+  return h;
+}
+
+function updateSim(key,val){
+  simData[key]=parseFloat(val)||0;
+  try{localStorage.setItem('bf-sim',JSON.stringify(simData));}catch(e){}
+  renderContent();
+}
+
+// ─── Overview ───
+function vOverview(){
+  var ls=liveStats();
+  var annualTarget=50000000;
+  var progressPct=ls.totalRev/annualTarget*100;
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">総合ダッシュボード</h1>';
+  h+='<p style="font-size:11px;color:var(--tx2)">BirdFlipリアルタイム連携 + 2026年事業計画</p></div>';
+
+  h+='<div class="grid-4 section">';
+  h+=kpiCard('確定売上',J(ls.rev),'完了案件のみ','var(--ac)');
+  h+=kpiCard('パイプライン',J(ls.totalRev),'全案件（見込含む）','var(--info)');
+  h+=kpiCard('粗利益率',ls.grossMargin.toFixed(1)+'%','外注費控除後','var(--ok)');
+  h+=kpiCard('年間目標進捗',progressPct.toFixed(1)+'%',J(ls.totalRev)+' / '+J(annualTarget),'var(--ac2)');
+  h+='</div>';
+
+  h+='<div class="card section"><div class="card-title">年商 ¥5,000万 進捗</div>';
+  h+='<div class="pbar" style="height:10px;margin-bottom:8px"><div class="pbar-fill" style="width:'+Math.min(progressPct,100)+'%;background:linear-gradient(90deg,var(--ac),var(--ac2))"></div></div>';
   h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx2)"><span>'+J(ls.totalRev)+'</span><span>'+J(annualTarget)+'</span></div></div>';
 
-  // Charts row
   h+='<div class="grid-2 section">';
-  h+='<div class="card fade d4"><div class="card-title">案件別 売上 vs 外注費</div><div class="chart-wrap"><canvas id="ch-proj"></canvas></div></div>';
-  h+='<div class="card fade d5"><div class="card-title">月商ロードマップ vs 実績</div><div class="chart-wrap"><canvas id="ch-road"></canvas></div></div>';
+  h+='<div class="card"><div class="card-title">案件別 売上 vs 外注費</div><div style="height:260px"><canvas id="ch-proj"></canvas></div></div>';
+  h+='<div class="card"><div class="card-title">月商ロードマップ</div><div style="height:260px"><canvas id="ch-road"></canvas></div></div>';
   h+='</div>';
 
-  // Active projects
-  h+='<div class="card section fade d5"><div class="card-title">進行中の案件 <span style="color:var(--ac)">(BirdFlip リアルタイム)</span></div>';
-  h+='<table class="tbl"><thead><tr><th>案件</th><th>タスク数</th><th>進行中</th><th>完了</th><th class="right">売上</th><th class="right">外注費</th><th class="right">利益</th><th>利益率</th></tr></thead><tbody>';
-  Object.entries(ls.byProject).forEach(([name,d])=>{
-    const profit=d.rev-d.out;const rate=d.rev>0?((profit/d.rev)*100).toFixed(0)+'%':'-';
-    h+=`<tr><td style="font-weight:700">${name}</td><td>${d.tasks.length}</td><td>${d.active}</td><td style="color:var(--ok)">${d.done}</td>
-    <td class="right mono" style="color:var(--ac)">${J(d.rev)}</td><td class="right mono" style="color:var(--wn)">${J(d.out)}</td>
-    <td class="right mono" style="color:${profit>=0?'var(--ok)':'var(--ng)'}">${J(profit)}</td>
-    <td><span class="pill" style="background:${profit>=0?'var(--acG)':'rgba(251,113,133,.15)'};color:${profit>=0?'var(--ok)':'var(--ng)'}">${rate}</span></td></tr>`;
-  });
+  // Active projects table
+  h+='<div class="card section"><div class="card-title">進行中の案件 <span style="color:var(--ac)">(LIVE)</span></div>';
+  h+='<table class="tbl"><thead><tr><th>案件</th><th>タスク</th><th>進行</th><th>完了</th><th class="r">売上</th><th class="r">外注</th><th class="r">利益</th></tr></thead><tbody>';
+  var keys=Object.keys(ls.byProject);
+  for(var i=0;i<keys.length;i++){
+    var name=keys[i],d=ls.byProject[name],profit=d.rev-d.out;
+    var rate=d.rev>0?((profit/d.rev)*100).toFixed(0)+'%':'-';
+    var pc=profit>=0?'var(--ok)':'var(--ng)';
+    h+='<tr><td style="font-weight:700">'+name+'</td><td>'+d.tasks.length+'</td><td>'+d.active+'</td><td style="color:var(--ok)">'+d.done+'</td>';
+    h+='<td class="r mono" style="color:var(--ac)">'+J(d.rev)+'</td><td class="r mono" style="color:var(--wn)">'+J(d.out)+'</td>';
+    h+='<td class="r mono" style="color:'+pc+'">'+J(profit)+'</td></tr>';
+  }
   h+='</tbody></table></div>';
-
   return h;
 }
 
+// ─── P/L ───
 function vPL(){
-  const ls=liveStats();
-  const rev=Y2026.revenue;
-  const outsource=rev*0.25;
-  const gross=rev-outsource;
-  const fixed=ls.fixedMonthly*12;
-  const ad=2000000;
-  const opex=fixed+ad;
-  const op=gross-opex;
-  let h='<div class="fade" style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">法人P/L シミュレーション</h1><p style="font-size:11px;color:var(--tx2)">年商5,000万円での損益計算</p></div>';
-
+  var rev=50000000,outsource=12500000,gross=37500000;
+  var fixed=9804000,ad=2000000,opex=fixed+ad,op=gross-opex;
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">法人P/L シミュレーション</h1></div>';
   h+='<div class="grid-2 section">';
-  // P/L table
-  h+='<div class="card fade d1"><div class="card-title">予想損益計算書</div>';
-  const rows=[
-    ['売上高',rev,'var(--ac)',true],
-    ['外注費（25%）',-outsource,'var(--ng)',false],
-    ['粗利益',gross,'var(--tx)',true],
-    ['─ 役員報酬',-Y2026.fixedCosts.役員報酬*12,'',false],
-    ['─ オフィス',-Y2026.fixedCosts.オフィス*12,'',false],
-    ['─ ツール',-Y2026.fixedCosts.ツール*12,'',false],
-    ['─ 社保',-Y2026.fixedCosts.社保*12,'',false],
-    ['─ 広告・マーケ',-ad,'',false],
-    ['─ その他',-Y2026.fixedCosts.その他*12,'',false],
-    ['販管費合計',-opex,'var(--ng)',true],
-    ['営業利益',op,'var(--ok)',true],
-  ];
+  h+='<div class="card"><div class="card-title">年間損益計算書</div>';
   h+='<table class="tbl">';
-  rows.forEach(([label,val,color,bold])=>{
-    const style=bold?'font-weight:800':'';const c=color||'var(--tx2)';
-    h+=`<tr><td style="${style}">${label}</td><td class="right mono" style="${style};color:${c}">${val>=0?'':'-'}${J(Math.abs(val))}</td></tr>`;
-  });
-  h+=`<tr style="background:var(--acG)"><td style="font-weight:800;color:var(--ok)">利益率</td><td class="right mono" style="font-weight:800;color:var(--ok)">${(op/rev*100).toFixed(1)}%</td></tr>`;
+  var rows=[['売上高',rev,'var(--ac)',1],['外注費(25%)',-outsource,'var(--ng)',0],['粗利益',gross,'var(--tx)',1],
+    ['役員報酬',-6000000,'',0],['オフィス',-1200000,'',0],['ツール',-600000,'',0],['社保',-1500000,'',0],['広告',-2000000,'',0],['その他',-504000,'',0],
+    ['販管費計',-opex,'var(--ng)',1],['営業利益',op,'var(--ok)',1]];
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i],s=r[3]?'font-weight:800':'',c=r[2]||'var(--tx2)';
+    h+='<tr><td style="'+s+'">'+r[0]+'</td><td class="r mono" style="'+s+';color:'+c+'">'+(r[1]>=0?'':'-')+J(Math.abs(r[1]))+'</td></tr>';
+  }
   h+='</table></div>';
-
-  // Donut
-  h+='<div class="card fade d2"><div class="card-title">支出構成</div><div class="chart-wrap" style="height:280px"><canvas id="ch-pl"></canvas></div></div>';
+  h+='<div class="card"><div class="card-title">支出構成</div><div style="height:280px"><canvas id="ch-pl"></canvas></div></div>';
   h+='</div>';
-
   return h;
 }
 
+// ─── Roadmap ───
 function vRoadmap(){
-  let h='<div class="fade" style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">月商ロードマップ</h1><p style="font-size:11px;color:var(--tx2)">¥620万 → ¥5,000万への成長計画</p></div>';
-
-  h+='<div class="card section fade d1"><div class="chart-wrap" style="height:320px"><canvas id="ch-roadmap-full"></canvas></div></div>';
-
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">月商ロードマップ</h1></div>';
+  h+='<div class="card section"><div style="height:320px"><canvas id="ch-roadmap-full"></canvas></div></div>';
+  var qs=[{q:'Q1',m:'4-6月',t:2000000,sum:6000000},{q:'Q2',m:'7-9月',t:3500000,sum:16500000},{q:'Q3',m:'10-12月',t:5500000,sum:33000000},{q:'Q4',m:'1-3月',t:7000000,sum:54000000}];
   h+='<div class="grid-4 section">';
-  Y2026.quarterly.forEach((q,i)=>{
-    const qRev=q.target*3;const cumBefore=Y2026.quarterly.slice(0,i).reduce((a,x)=>a+x.target*3,0);
-    const cum=cumBefore+qRev;
-    h+=`<div class="card fade d${i+1}">
-      <div class="pill" style="background:var(--acG);color:var(--ac);margin-bottom:8px">${q.q} (${q.months.join('-')})</div>
-      <div style="font-size:24px;font-weight:800" class="mono">${J(q.target)}<span style="font-size:11px;color:var(--tx2)">/月</span></div>
-      <div style="font-size:10px;color:var(--tx2);margin-top:4px">四半期: ${J(qRev)} | 累計: ${J(cum)}</div>
-      <div class="pbar" style="margin-top:10px"><div class="pbar-fill" style="width:${cum/Y2026.revenue*100}%;background:linear-gradient(90deg,var(--ac),var(--ac2))"></div></div>
-    </div>`;
-  });
+  for(var i=0;i<qs.length;i++){
+    var q=qs[i],pct=(q.sum/50000000*100);
+    h+='<div class="card"><div class="pill" style="background:var(--acG);color:var(--ac);margin-bottom:8px">'+q.q+' ('+q.m+')</div>';
+    h+='<div style="font-size:24px;font-weight:800" class="mono">'+J(q.t)+'<span style="font-size:11px;color:var(--tx2)">/月</span></div>';
+    h+='<div style="font-size:10px;color:var(--tx2);margin-top:4px">累計: '+J(q.sum)+'</div>';
+    h+='<div class="pbar" style="margin-top:10px"><div class="pbar-fill" style="width:'+pct+'%;background:linear-gradient(90deg,var(--ac),var(--ac2))"></div></div></div>';
+  }
   h+='</div>';
   return h;
 }
 
+// ─── Projects ───
 function vProjects(){
-  const ls=liveStats();
-  let h='<div class="fade" style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">案件別収益 <span style="font-size:12px;color:var(--ac);font-weight:500">🔴 LIVE</span></h1><p style="font-size:11px;color:var(--tx2)">BirdFlipの案件データをリアルタイム表示</p></div>';
-
-  Object.entries(ls.byProject).forEach(([name,d])=>{
-    const profit=d.rev-d.out;const rate=d.rev>0?((profit/d.rev)*100).toFixed(0):0;
-    h+=`<div class="card section fade"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div><div style="font-size:15px;font-weight:800">${name}</div><div style="font-size:10px;color:var(--tx2)">${d.tasks.length}タスク / ${d.done}完了</div></div>
-      <div style="text-align:right"><div class="mono" style="font-size:18px;font-weight:800;color:var(--ac)">${J(d.rev)}</div>
-      <div style="font-size:10px;color:${profit>=0?'var(--ok)':'var(--ng)'}">利益 ${J(profit)} (${rate}%)</div></div></div>`;
-    h+='<table class="tbl"><thead><tr><th>タスク</th><th>状態</th><th>担当</th><th>締切</th><th class="right">売上</th><th class="right">外注費</th><th class="right">利益</th></tr></thead><tbody>';
-    d.tasks.forEach(t=>{
-      const st=STA[t.status]||{l:t.status,c:'#888'};const p=(t.revenue||0)-(t.outsourceCost||0);
-      h+=`<tr><td style="font-weight:600">${t.title}</td>
-        <td><span class="pill" style="background:${st.c}22;color:${st.c}"><span class="sdot" style="background:${st.c}"></span>${st.l}</span></td>
-        <td style="font-size:10px;color:var(--tx2)">${t.assignee||'-'}</td>
-        <td class="mono" style="font-size:10px">${t.deadline||'-'}</td>
-        <td class="right mono" style="color:var(--ac)">${J(t.revenue||0)}</td>
-        <td class="right mono" style="color:var(--wn)">${J(t.outsourceCost||0)}</td>
-        <td class="right mono" style="color:${p>=0?'var(--ok)':'var(--ng)'}">${J(p)}</td></tr>`;
-    });
+  var ls=liveStats();
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">案件別収益 <span style="font-size:12px;color:var(--ac)">🔴 LIVE</span></h1></div>';
+  var keys=Object.keys(ls.byProject);
+  for(var k=0;k<keys.length;k++){
+    var name=keys[k],d=ls.byProject[name],profit=d.rev-d.out;
+    var rate=d.rev>0?((profit/d.rev)*100).toFixed(0):0;
+    var pc=profit>=0?'var(--ok)':'var(--ng)';
+    h+='<div class="card section"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+    h+='<div><div style="font-size:15px;font-weight:800">'+name+'</div><div style="font-size:10px;color:var(--tx2)">'+d.tasks.length+'タスク / '+d.done+'完了</div></div>';
+    h+='<div style="text-align:right"><div class="mono" style="font-size:18px;font-weight:800;color:var(--ac)">'+J(d.rev)+'</div>';
+    h+='<div style="font-size:10px;color:'+pc+'">利益 '+J(profit)+' ('+rate+'%)</div></div></div>';
+    h+='<table class="tbl"><thead><tr><th>タスク</th><th>状態</th><th>担当</th><th>締切</th><th class="r">売上</th><th class="r">外注</th></tr></thead><tbody>';
+    for(var i=0;i<d.tasks.length;i++){
+      var t=d.tasks[i],st=STA[t.status]||{l:t.status,c:'#888'};
+      h+='<tr><td style="font-weight:600">'+t.title+'</td>';
+      h+='<td><span class="pill" style="background:'+st.c+'22;color:'+st.c+'">'+st.l+'</span></td>';
+      h+='<td style="font-size:10px;color:var(--tx2)">'+(t.assignee||'-')+'</td>';
+      h+='<td class="mono" style="font-size:10px">'+(t.deadline||'-')+'</td>';
+      h+='<td class="r mono" style="color:var(--ac)">'+J(t.revenue||0)+'</td>';
+      h+='<td class="r mono" style="color:var(--wn)">'+J(t.outsourceCost||0)+'</td></tr>';
+    }
     h+='</tbody></table></div>';
-  });
+  }
   return h;
 }
 
+// ─── Costs ───
 function vCosts(){
-  const fc=Y2026.fixedCosts;const monthly=Object.values(fc).reduce((a,v)=>a+v,0);
-  let h='<div class="fade" style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">固定費・役員報酬</h1></div>';
-
+  var fc={役員報酬:500000,オフィス:100000,ツール:50000,社保:125000,広告:166667,その他:42000};
+  var monthly=0;var fkeys=Object.keys(fc);for(var i=0;i<fkeys.length;i++)monthly+=fc[fkeys[i]];
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">固定費・役員報酬</h1></div>';
   h+='<div class="grid-3 section">';
-  h+=kpiCard('月額固定費','',J(monthly),'全固定費合計','var(--wn)','fade d1');
-  h+=kpiCard('年間固定費','',J(monthly*12),'×12ヶ月','var(--ng)','fade d2');
-  h+=kpiCard('損益分岐点','',J(Math.round(monthly/0.75))+'<span style="font-size:12px">/月</span>','粗利率75%で計算','var(--info)','fade d3');
+  h+=kpiCard('月額固定費',J(monthly),'全固定費合計','var(--wn)');
+  h+=kpiCard('年間固定費',J(monthly*12),'×12ヶ月','var(--ng)');
+  h+=kpiCard('損益分岐点',J(Math.round(monthly/0.75))+'/月','粗利率75%で計算','var(--info)');
   h+='</div>';
-
   h+='<div class="grid-2 section">';
-  // Fixed costs table
-  h+='<div class="card fade d2"><div class="card-title">固定費内訳</div><table class="tbl">';
-  Object.entries(fc).forEach(([k,v])=>{
-    h+=`<tr><td style="font-weight:600">${k}</td><td class="right mono">${J(v)}/月</td><td class="right mono" style="color:var(--tx2)">${J(v*12)}/年</td></tr>`;
-  });
-  h+=`<tr style="background:var(--glass)"><td style="font-weight:800">合計</td><td class="right mono" style="font-weight:800">${J(monthly)}/月</td><td class="right mono" style="font-weight:800">${J(monthly*12)}/年</td></tr>`;
+  h+='<div class="card"><div class="card-title">固定費内訳</div><table class="tbl">';
+  for(var i=0;i<fkeys.length;i++){
+    h+='<tr><td style="font-weight:600">'+fkeys[i]+'</td><td class="r mono">'+J(fc[fkeys[i]])+'/月</td><td class="r mono" style="color:var(--tx2)">'+J(fc[fkeys[i]]*12)+'/年</td></tr>';
+  }
+  h+='<tr style="background:var(--glass)"><td style="font-weight:800">合計</td><td class="r mono" style="font-weight:800">'+J(monthly)+'/月</td><td class="r mono" style="font-weight:800">'+J(monthly*12)+'/年</td></tr>';
   h+='</table></div>';
-
-  // 役員報酬シミュレーション
-  h+='<div class="card fade d3"><div class="card-title">役員報酬シミュレーション</div>';
-  h+='<div style="display:flex;gap:12px;margin-bottom:16px">';
-  [300000,500000,700000].forEach(v=>{
-    const take=Math.round(v*0.78);const isCurrent=v===500000;
-    h+=`<div style="flex:1;padding:14px;background:${isCurrent?'var(--acG)':'var(--glass)'};border-radius:var(--Rs);border:1px solid ${isCurrent?'var(--ac)':'var(--bd)'}">
-      <div style="font-size:10px;color:${isCurrent?'var(--ac)':'var(--txM)'};font-weight:700;margin-bottom:4px">${isCurrent?'★ 推奨':''}${J(v)}/月</div>
-      <div style="font-size:9px;color:var(--tx2)">手取り約 ${J(take)}</div>
-      <div style="font-size:9px;color:var(--tx2)">年額 ${J(v*12)}</div>
-    </div>`;
-  });
-  h+='</div>';
-  h+='<div style="padding:10px;background:var(--glass);border-radius:var(--Rs);font-size:10px;color:var(--tx2)">💡 2025年の生活費月額¥25.5万。役員報酬¥50万で手取り約¥39万、月¥13万の貯蓄余力。交通費・接待費は法人経費処理で個人負担軽減。</div>';
-  h+='</div>';
-  h+='</div>';
+  h+='<div class="card"><div class="card-title">役員報酬 比較</div>';
+  var opts=[300000,500000,700000];
+  for(var i=0;i<opts.length;i++){
+    var v=opts[i],take=Math.round(v*0.78),cur=v===500000;
+    h+='<div style="padding:12px;background:'+(cur?'var(--acG)':'var(--glass)')+';border-radius:12px;border:1px solid '+(cur?'var(--ac)':'var(--bd)')+';margin-bottom:8px">';
+    h+='<div style="display:flex;justify-content:space-between"><span style="font-size:12px;font-weight:700;color:'+(cur?'var(--ac)':'var(--tx)')+'">'+(cur?'★ 推奨 ':'')+ J(v)+'/月</span>';
+    h+='<span style="font-size:10px;color:var(--tx2)">手取り約'+J(take)+'</span></div></div>';
+  }
+  h+='</div></div>';
   return h;
 }
 
+// ─── KPI ───
 function vKPI(){
-  const ls=liveStats();
-  const now=new Date();const monthIdx=now.getMonth();// 0=Jan
-  // Which quarter are we in (fiscal: Apr=Q1)
-  const fiscalMonth=(monthIdx>=3)?monthIdx-3:monthIdx+9;
-  const qIdx=Math.floor(fiscalMonth/3);
-  const currentQ=Y2026.quarterly[Math.min(qIdx,3)];
-  const monthlyTarget=currentQ?currentQ.target:2000000;
-
-  let h='<div class="fade" style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">KPI追跡</h1><p style="font-size:11px;color:var(--tx2)">目標 vs 実績のリアルタイム比較</p></div>';
-
-  // Main KPIs
+  var ls=liveStats();
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">KPI追跡</h1></div>';
   h+='<div class="grid-3 section">';
-  const kpis=[
-    {label:'月商目標',target:monthlyTarget,actual:ls.totalRev,unit:''},
-    {label:'外注費率',target:25,actual:ls.totalRev>0?(ls.totalOut/ls.totalRev*100):0,unit:'%',lower:true},
-    {label:'粗利率',target:75,actual:ls.grossMargin,unit:'%'},
+  var kpis=[
+    {l:'月商目標',t:simData.revenue,a:ls.totalRev,u:'',lower:false},
+    {l:'外注費率',t:25,a:ls.totalRev>0?(ls.totalOut/ls.totalRev*100):0,u:'%',lower:true},
+    {l:'粗利率',t:75,a:ls.grossMargin,u:'%',lower:false}
   ];
-  kpis.forEach((k,i)=>{
-    const achieved=k.lower?(k.actual<=k.target):(k.actual>=k.target);
-    const p=k.lower?Math.max(0,100-(k.actual/k.target*100)):Math.min(100,k.actual/(k.target||1)*100);
-    const displayActual=k.unit?k.actual.toFixed(1)+k.unit:J(k.actual);
-    const displayTarget=k.unit?k.target+k.unit:J(k.target);
-    h+=`<div class="card fade d${i+1}"><div class="card-title">${k.label}</div>
-      <div style="font-size:24px;font-weight:800;color:${achieved?'var(--ok)':'var(--wn)'}" class="mono">${displayActual}</div>
-      <div style="font-size:10px;color:var(--tx2);margin:4px 0 10px">目標: ${displayTarget}</div>
-      <div class="pbar"><div class="pbar-fill" style="width:${Math.min(p,100)}%;background:${achieved?'var(--ok)':'var(--wn)'}"></div></div>
-      <div style="font-size:9px;color:${achieved?'var(--ok)':'var(--wn)'};margin-top:4px;font-weight:700">${achieved?'✓ 達成':'△ '+(100-p).toFixed(0)+'% 不足'}</div>
-    </div>`;
-  });
+  for(var i=0;i<kpis.length;i++){
+    var k=kpis[i];
+    var achieved=k.lower?(k.a<=k.t):(k.a>=k.t);
+    var displayA=k.u?k.a.toFixed(1)+k.u:J(k.a);
+    var displayT=k.u?k.t+k.u:J(k.t);
+    var c=achieved?'var(--ok)':'var(--wn)';
+    h+='<div class="card"><div class="card-title">'+k.l+'</div>';
+    h+='<div class="mono" style="font-size:24px;font-weight:800;color:'+c+'">'+displayA+'</div>';
+    h+='<div style="font-size:10px;color:var(--tx2);margin:4px 0 8px">目標: '+displayT+'</div>';
+    h+='<div style="font-size:9px;font-weight:700;color:'+c+'">'+(achieved?'✓ 達成':'△ 未達')+'</div></div>';
+  }
   h+='</div>';
-
-  // Task KPIs
   h+='<div class="grid-4 section">';
-  h+=kpiCard('総タスク数','',S.tasks.length,'BirdFlip連携','var(--info)','fade d2');
-  h+=kpiCard('完了タスク','',ls.done.length,S.tasks.length>0?(ls.done.length/S.tasks.length*100).toFixed(0)+'% 完了率':'','var(--ok)','fade d3');
-  h+=kpiCard('進行中','',ls.active.length,'アクティブ','var(--wn)','fade d4');
-  const overdueCount=S.tasks.filter(t=>t.deadline&&t.status!=='done'&&t.status!=='stop'&&new Date(t.deadline)<new Date()).length;
-  h+=kpiCard('期限超過','',overdueCount,overdueCount>0?'要対応':'問題なし',overdueCount>0?'var(--ng)':'var(--ok)','fade d5');
+  h+=kpiCard('総タスク',''+S.tasks.length,'BirdFlip連携','var(--info)');
+  h+=kpiCard('完了',''+ls.done.length,(S.tasks.length>0?((ls.done.length/S.tasks.length)*100).toFixed(0)+'%':''),'var(--ok)');
+  h+=kpiCard('進行中',''+ls.active.length,'','var(--wn)');
+  var overdue=0;var now=new Date().toISOString().slice(0,10);
+  for(var i=0;i<S.tasks.length;i++){var t=S.tasks[i];if(t.deadline&&t.status!=='done'&&t.status!=='stop'&&t.deadline<now)overdue++;}
+  h+=kpiCard('期限超過',''+overdue,overdue>0?'要対応':'問題なし',overdue>0?'var(--ng)':'var(--ok)');
   h+='</div>';
-
-  // Chart
-  h+='<div class="card section fade d5"><div class="card-title">ステータス分布</div><div class="chart-wrap" style="height:200px"><canvas id="ch-status"></canvas></div></div>';
+  h+='<div class="card section"><div class="card-title">ステータス分布</div><div style="height:200px"><canvas id="ch-status"></canvas></div></div>';
   return h;
 }
 
+// ─── 2025 ───
 function vY2025(){
-  let h='<div class="fade" style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">2025年 実績サマリー</h1><p style="font-size:11px;color:var(--tx2)">個人事業 → 法人化の基礎データ</p></div>';
-
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">2025年 実績サマリー</h1></div>';
   h+='<div class="grid-3 section">';
-  h+=kpiCard('年間収入','',J(Y2025.income),'','var(--ac)','fade d1');
-  h+=kpiCard('年間支出','',J(Y2025.expense),'','var(--ng)','fade d2');
-  h+=kpiCard('手残り','',J(Y2025.net),'利益率 '+(Y2025.net/Y2025.income*100).toFixed(1)+'%','var(--ok)','fade d3');
+  h+=kpiCard('年間収入',J(Y2025.income),'','var(--ac)');
+  h+=kpiCard('年間支出',J(Y2025.expense),'','var(--ng)');
+  h+=kpiCard('手残り',J(Y2025.net),'利益率 '+(Y2025.net/Y2025.income*100).toFixed(1)+'%','var(--ok)');
   h+='</div>';
-
   h+='<div class="grid-2 section">';
-  // Category breakdown
-  h+='<div class="card fade d3"><div class="card-title">カテゴリ別支出</div><table class="tbl">';
-  Object.entries(Y2025.cats).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
-    h+=`<tr><td style="font-weight:600">${k}</td><td class="right mono">${J(v)}</td><td class="right" style="font-size:10px;color:var(--tx2)">${(v/Y2025.expense*100).toFixed(1)}%</td></tr>`;
-  });
+  h+='<div class="card"><div class="card-title">カテゴリ別支出</div><table class="tbl">';
+  var ckeys=Object.keys(Y2025.cats).sort(function(a,b){return Y2025.cats[b]-Y2025.cats[a];});
+  for(var i=0;i<ckeys.length;i++){
+    var k=ckeys[i],v=Y2025.cats[k];
+    h+='<tr><td style="font-weight:600">'+k+'</td><td class="r mono">'+J(v)+'</td><td class="r" style="font-size:10px;color:var(--tx2)">'+(v/Y2025.expense*100).toFixed(1)+'%</td></tr>';
+  }
   h+='</table></div>';
-
-  // Monthly chart
-  h+='<div class="card fade d4"><div class="card-title">月別キャッシュフロー</div><div class="chart-wrap" style="height:260px"><canvas id="ch-2025"></canvas></div></div>';
+  h+='<div class="card"><div class="card-title">月別キャッシュフロー</div><div style="height:260px"><canvas id="ch-2025"></canvas></div></div>';
   h+='</div>';
-
-  // Comparison
-  h+='<div class="card section fade d5"><div class="card-title">2025 → 2026 比較</div>';
-  h+='<table class="tbl"><thead><tr><th></th><th class="right">2025実績</th><th class="right">2026目標</th><th class="right">倍率</th></tr></thead><tbody>';
-  const comps=[['売上',Y2025.income,Y2026.revenue],['月商平均',Math.round(Y2025.income/12),Math.round(Y2026.revenue/12)],['外注費',Y2025.cats.外注費用,Y2026.revenue*0.25]];
-  comps.forEach(([l,a,b])=>{
-    h+=`<tr><td style="font-weight:700">${l}</td><td class="right mono">${J(a)}</td><td class="right mono" style="color:var(--ac)">${J(b)}</td><td class="right mono" style="color:var(--ac2)">×${(b/a).toFixed(1)}</td></tr>`;
-  });
-  h+='</tbody></table></div>';
   return h;
-}
-
-// ─── Helpers ───
-function kpiCard(title,icon,value,sub,color,cls){
-  return `<div class="card ${cls||''}"><div class="card-title">${title}</div><div class="card-value mono" style="color:${color||'var(--tx)'}">${value}</div><div class="card-sub">${sub||''}</div></div>`;
 }
 
 // ─── Charts ───
 function initCharts(){
-  const ls=liveStats();
-  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  const gridColor=isDark?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)';
-  const fontColor=isDark?'#8da4b8':'#5a7890';
-  const defaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:fontColor,font:{family:"'Plus Jakarta Sans'",size:10,weight:'600'}}}},scales:{}};
+  var ls=liveStats();
+  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  var gColor=isDark?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)';
+  var fColor=isDark?'#8da4b8':'#5a7890';
 
-  // Overview: Project bar chart
-  const projEl=document.getElementById('ch-proj');
-  if(projEl){
-    destroyChart('ch-proj');
-    const names=Object.keys(ls.byProject);
-    chartInstances['ch-proj']=new Chart(projEl,{type:'bar',data:{labels:names,datasets:[
-      {label:'売上',data:names.map(n=>ls.byProject[n].rev),backgroundColor:isDark?'rgba(94,234,212,.5)':'rgba(41,148,204,.5)',borderRadius:6},
-      {label:'外注費',data:names.map(n=>ls.byProject[n].out),backgroundColor:isDark?'rgba(251,191,36,.4)':'rgba(217,119,6,.4)',borderRadius:6}
-    ]},options:{...defaults,scales:{y:{ticks:{callback:v=>J(v),color:fontColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gridColor}},x:{ticks:{color:fontColor,font:{size:9}},grid:{display:false}}}}});
+  // Waterfall
+  var wfEl=document.getElementById('ch-waterfall');
+  if(wfEl){
+    destroyChart('ch-waterfall');
+    var d=simData,outsource=Math.round(d.revenue*d.outsourceRate/100),gross=d.revenue-outsource;
+    var fixed=d.salary+d.office+d.tools+d.insurance+d.ad+d.other,op=gross-fixed;
+    chartInstances['ch-waterfall']=new Chart(wfEl,{type:'bar',data:{
+      labels:['売上','外注費','粗利益','役員報酬','オフィス','ツール','社保','広告','その他','営業利益'],
+      datasets:[{data:[d.revenue,-outsource,gross,-d.salary,-d.office,-d.tools,-d.insurance,-d.ad,-d.other,op],
+        backgroundColor:function(ctx){var v=ctx.raw;return v>=0?(isDark?'rgba(94,234,212,.6)':'rgba(41,148,204,.6)'):(isDark?'rgba(251,113,133,.5)':'rgba(225,29,72,.5)');},
+        borderRadius:6}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return J(v);},color:fColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gColor}},x:{ticks:{color:fColor,font:{size:9}},grid:{display:false}}}}});
   }
 
-  // Overview: Roadmap
-  const roadEl=document.getElementById('ch-road');
+  // Project bar
+  var projEl=document.getElementById('ch-proj');
+  if(projEl){
+    destroyChart('ch-proj');
+    var names=Object.keys(ls.byProject);
+    var revs=[],outs=[];
+    for(var i=0;i<names.length;i++){revs.push(ls.byProject[names[i]].rev);outs.push(ls.byProject[names[i]].out);}
+    chartInstances['ch-proj']=new Chart(projEl,{type:'bar',data:{labels:names,datasets:[
+      {label:'売上',data:revs,backgroundColor:isDark?'rgba(94,234,212,.5)':'rgba(41,148,204,.5)',borderRadius:6},
+      {label:'外注費',data:outs,backgroundColor:isDark?'rgba(251,191,36,.4)':'rgba(217,119,6,.4)',borderRadius:6}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:fColor,font:{size:10}}}},scales:{y:{ticks:{callback:function(v){return J(v);},color:fColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gColor}},x:{ticks:{color:fColor,font:{size:9}},grid:{display:false}}}}});
+  }
+
+  // Roadmap
+  var roadEl=document.getElementById('ch-road')||document.getElementById('ch-roadmap-full');
   if(roadEl){
-    destroyChart('ch-road');
-    const months=['4月','5月','6月','7月','8月','9月','10月','11月','12月','1月','2月','3月'];
-    const targets=[200,200,200,350,350,350,550,550,550,700,700,700];
-    chartInstances['ch-road']=new Chart(roadEl,{type:'bar',data:{labels:months,datasets:[
-      {label:'月商目標(万)',data:targets,backgroundColor:isDark?'rgba(94,234,212,.25)':'rgba(41,148,204,.25)',borderColor:isDark?'#5eead4':'#2994cc',borderWidth:1,borderRadius:4}
-    ]},options:{...defaults,scales:{y:{ticks:{callback:v=>v+'万',color:fontColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gridColor}},x:{ticks:{color:fontColor,font:{size:9}},grid:{display:false}}}}});
+    var cid=roadEl.id;destroyChart(cid);
+    var months=['4月','5月','6月','7月','8月','9月','10月','11月','12月','1月','2月','3月'];
+    var targets=[200,200,200,350,350,350,550,550,550,700,700,700];
+    var cum=[];var s=0;for(var i=0;i<targets.length;i++){s+=targets[i];cum.push(s);}
+    chartInstances[cid]=new Chart(roadEl,{type:'bar',data:{labels:months,datasets:[
+      {type:'bar',label:'月商(万)',data:targets,backgroundColor:isDark?'rgba(94,234,212,.25)':'rgba(41,148,204,.25)',borderColor:isDark?'#5eead4':'#2994cc',borderWidth:1,borderRadius:4,yAxisID:'y'},
+      {type:'line',label:'累計(万)',data:cum,borderColor:isDark?'#a78bfa':'#7c3aed',fill:true,backgroundColor:isDark?'rgba(167,139,250,.1)':'rgba(124,58,237,.1)',tension:.3,pointRadius:3,yAxisID:'y1'}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:fColor,font:{size:10}}}},scales:{
+      y:{position:'left',ticks:{callback:function(v){return v+'万';},color:fColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gColor}},
+      y1:{position:'right',ticks:{callback:function(v){return v+'万';},color:isDark?'#a78bfa':'#7c3aed',font:{family:"'JetBrains Mono'",size:9}},grid:{display:false}},
+      x:{ticks:{color:fColor,font:{size:10}},grid:{display:false}}
+    }}});
   }
 
   // P/L donut
-  const plEl=document.getElementById('ch-pl');
+  var plEl=document.getElementById('ch-pl');
   if(plEl){
     destroyChart('ch-pl');
-    const fc=Y2026.fixedCosts;
     chartInstances['ch-pl']=new Chart(plEl,{type:'doughnut',data:{
       labels:['外注費','役員報酬','オフィス','ツール','社保','広告','その他','営業利益'],
-      datasets:[{data:[12500000,fc.役員報酬*12,fc.オフィス*12,fc.ツール*12,fc.社保*12,2000000,fc.その他*12,22500000],
+      datasets:[{data:[12500000,6000000,1200000,600000,1500000,2000000,504000,25696000],
         backgroundColor:['#fb923c','#5eead4','#64748b','#ec4899','#6366f1','#f59e0b','#94a3b8','#34d399'],borderWidth:2,borderColor:isDark?'#070b12':'#fff'}]
-    },options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{color:fontColor,font:{size:9,weight:'600'},padding:8,usePointStyle:true}}}}});
+    },options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{color:fColor,font:{size:9},padding:8,usePointStyle:true}}}}});
   }
 
-  // Full roadmap
-  const rmEl=document.getElementById('ch-roadmap-full');
-  if(rmEl){
-    destroyChart('ch-roadmap-full');
-    const months=['4月','5月','6月','7月','8月','9月','10月','11月','12月','1月','2月','3月'];
-    const targets=[200,200,200,350,350,350,550,550,550,700,700,700];
-    const cum=[];let s=0;targets.forEach(v=>{s+=v;cum.push(s)});
-    chartInstances['ch-roadmap-full']=new Chart(rmEl,{type:'bar',data:{labels:months,datasets:[
-      {type:'bar',label:'月商(万)',data:targets,backgroundColor:isDark?'rgba(94,234,212,.3)':'rgba(41,148,204,.3)',borderRadius:6,yAxisID:'y'},
-      {type:'line',label:'累計(万)',data:cum,borderColor:isDark?'#a78bfa':'#7c3aed',backgroundColor:isDark?'rgba(167,139,250,.1)':'rgba(124,58,237,.1)',fill:true,tension:.3,pointRadius:4,yAxisID:'y1'}
-    ]},options:{...defaults,scales:{
-      y:{position:'left',ticks:{callback:v=>v+'万',color:fontColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gridColor}},
-      y1:{position:'right',ticks:{callback:v=>v+'万',color:isDark?'#a78bfa':'#7c3aed',font:{family:"'JetBrains Mono'",size:9}},grid:{display:false}},
-      x:{ticks:{color:fontColor,font:{size:10,weight:'600'}},grid:{display:false}}
-    }}});
-  }
-
-  // 2025 monthly
-  const y25El=document.getElementById('ch-2025');
+  // 2025
+  var y25El=document.getElementById('ch-2025');
   if(y25El){
     destroyChart('ch-2025');
-    chartInstances['ch-2025']=new Chart(y25El,{type:'bar',data:{labels:Y2025.monthly.map(m=>m.m),datasets:[
-      {label:'入金',data:Y2025.monthly.map(m=>m.i),backgroundColor:isDark?'rgba(94,234,212,.5)':'rgba(41,148,204,.5)',borderRadius:4},
-      {label:'支出',data:Y2025.monthly.map(m=>m.o),backgroundColor:isDark?'rgba(251,113,133,.3)':'rgba(225,29,72,.3)',borderRadius:4}
-    ]},options:{...defaults,scales:{y:{ticks:{callback:v=>'¥'+(v/10000).toFixed(0)+'万',color:fontColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gridColor}},x:{ticks:{color:fontColor,font:{size:9}},grid:{display:false}}}}});
+    var mLabels=[],mIn=[],mOut=[];
+    for(var i=0;i<Y2025.monthly.length;i++){mLabels.push(Y2025.monthly[i].m);mIn.push(Y2025.monthly[i].i);mOut.push(Y2025.monthly[i].o);}
+    chartInstances['ch-2025']=new Chart(y25El,{type:'bar',data:{labels:mLabels,datasets:[
+      {label:'入金',data:mIn,backgroundColor:isDark?'rgba(94,234,212,.5)':'rgba(41,148,204,.5)',borderRadius:4},
+      {label:'支出',data:mOut,backgroundColor:isDark?'rgba(251,113,133,.3)':'rgba(225,29,72,.3)',borderRadius:4}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:fColor,font:{size:10}}}},scales:{y:{ticks:{callback:function(v){return '¥'+(v/10000).toFixed(0)+'万';},color:fColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gColor}},x:{ticks:{color:fColor,font:{size:9}},grid:{display:false}}}}});
   }
 
-  // KPI status chart
-  const stEl=document.getElementById('ch-status');
+  // Status
+  var stEl=document.getElementById('ch-status');
   if(stEl){
     destroyChart('ch-status');
-    const statusCounts={};S.tasks.forEach(t=>{const s=t.status||'todo';statusCounts[s]=(statusCounts[s]||0)+1;});
-    chartInstances['ch-status']=new Chart(stEl,{type:'bar',data:{
-      labels:Object.keys(statusCounts).map(k=>STA[k]?.l||k),
-      datasets:[{data:Object.values(statusCounts),backgroundColor:Object.keys(statusCounts).map(k=>STA[k]?.c||'#888'),borderRadius:6}]
-    },options:{...defaults,indexAxis:'y',plugins:{legend:{display:false}},scales:{
-      x:{ticks:{color:fontColor,font:{size:9}},grid:{color:gridColor}},
-      y:{ticks:{color:fontColor,font:{size:10,weight:'600'}},grid:{display:false}}
-    }}});
+    var sc={},sl=[],sd=[],sco=[];
+    for(var i=0;i<S.tasks.length;i++){var st=S.tasks[i].status||'todo';sc[st]=(sc[st]||0)+1;}
+    var skeys=Object.keys(sc);
+    for(var i=0;i<skeys.length;i++){sl.push((STA[skeys[i]]||{l:skeys[i]}).l);sd.push(sc[skeys[i]]);sco.push((STA[skeys[i]]||{c:'#888'}).c);}
+    chartInstances['ch-status']=new Chart(stEl,{type:'bar',data:{labels:sl,datasets:[{data:sd,backgroundColor:sco,borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:fColor,font:{size:9}},grid:{color:gColor}},y:{ticks:{color:fColor,font:{size:10}},grid:{display:false}}}}});
   }
 }
 
-// Initial render
+// First render
 render();
 </script>
 </body>

@@ -122,6 +122,19 @@ var simData={
 // Try load saved sim
 try{var saved=localStorage.getItem('bf-sim');if(saved)simData=JSON.parse(saved);}catch(e){}
 
+// Life simulation state (based on 2025 actual data)
+var lifeData={
+  target:300000,
+  rent:77500,
+  loan:28020,
+  phone:10000,
+  utility:15000,
+  subs:40000,
+  food:60000,
+  biz:0 // auto-calculated as remainder
+};
+try{var savedLife=localStorage.getItem('bf-life');if(savedLife)lifeData=JSON.parse(savedLife);}catch(e){}
+
 var J=function(v){return '¥'+(v||0).toLocaleString();};
 var chartInstances={};
 function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
@@ -189,7 +202,8 @@ function render(){renderSidebar();renderContent();}
 function renderSidebar(){
   var items=[
     {k:'overview',icon:'◎',label:'総合ダッシュボード'},
-    {k:'sim',icon:'⚙',label:'月間シミュレーション'},
+    {k:'sim',icon:'⚙',label:'事業P/Lシミュレーション'},
+    {k:'life',icon:'🏠',label:'生活費シミュレーション'},
     {k:'pl',icon:'▤',label:'法人P/L'},
     {k:'roadmap',icon:'◆',label:'月商ロードマップ'},
     {k:'projects',icon:'≡',label:'案件別収益'},
@@ -223,6 +237,7 @@ function renderContent(){
   var el=document.getElementById('content');
   if(view==='overview')el.innerHTML=vOverview();
   else if(view==='sim')el.innerHTML=vSim();
+  else if(view==='life')el.innerHTML=vLife();
   else if(view==='pl')el.innerHTML=vPL();
   else if(view==='roadmap')el.innerHTML=vRoadmap();
   else if(view==='projects')el.innerHTML=vProjects();
@@ -350,6 +365,125 @@ function simRow(label,key,val,suffix){
 function updateSim(key,val){
   simData[key]=parseFloat(val)||0;
   try{localStorage.setItem('bf-sim',JSON.stringify(simData));}catch(e){}
+  renderContent();
+}
+
+// ─── Life Cost Simulation ───
+function vLife(){
+  var d=lifeData;
+  var fixedTotal=d.rent+d.loan+d.phone+d.utility;
+  var variableTotal=d.subs+d.food;
+  var allocated=fixedTotal+variableTotal;
+  var buffer=d.target-allocated;
+  var y2025life=255091; // 2025 monthly average
+  var saving=y2025life-d.target;
+
+  var h='<div style="margin-bottom:20px"><h1 style="font-size:22px;font-weight:800">🏠 月間総支出 '+J(d.target)+' 必達シミュレーション</h1>';
+  h+='<p style="font-size:11px;color:var(--tx2)">2025年実績（月'+J(y2025life)+'）をベースに、法人化後の個人支出を最適化</p></div>';
+
+  // Target setting
+  h+='<div class="card section"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">';
+  h+='<div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px;font-weight:800">月間目標支出額</span>';
+  h+='<input class="sim-input" type="number" value="'+d.target+'" onchange="updateLife(\'target\',this.value)" onfocus="this.select()" style="width:140px;font-size:16px;font-weight:800"></div>';
+  h+='<div style="display:flex;gap:6px">';
+  var presets=[250000,300000,350000,400000];
+  for(var i=0;i<presets.length;i++){
+    var active=d.target===presets[i];
+    h+='<button class="btn btn-sm'+(active?' btn-ac':'')+'" onclick="updateLife(\'target\','+presets[i]+')">'+J(presets[i])+'</button>';
+  }
+  h+='</div></div></div>';
+
+  // KPI cards
+  var bufferColor=buffer>=0?'var(--ok)':'var(--ng)';
+  h+='<div class="grid-4 section">';
+  h+=kpiCard('目標支出',J(d.target),'役員報酬の手取り内で生活','var(--ac)');
+  h+=kpiCard('配分済み',J(allocated),'固定費+変動費','var(--info)');
+  h+=kpiCard('事業・交際・予備',J(buffer),buffer>=0?'打ち合わせ・移動・予備':'⚠ 予算超過！',bufferColor);
+  h+=kpiCard('2025年比',J(saving>0?saving:saving)+'/月',(saving>0?'削減':'増加')+'（2025年月'+J(y2025life)+'）',saving>0?'var(--ok)':'var(--ng)');
+  h+='</div>';
+
+  // Budget bar
+  h+='<div class="card section"><div class="card-title">予算配分</div>';
+  var categories=[
+    {label:'住居・負債',val:d.rent+d.loan,color:'#fb923c'},
+    {label:'通信・インフラ',val:d.phone+d.utility,color:'#60a5fa'},
+    {label:'事業サブスク',val:d.subs,color:'#a78bfa'},
+    {label:'食費・日用品',val:d.food,color:'#34d399'},
+    {label:'事業・交際費',val:Math.max(0,buffer),color:'#fbbf24'}
+  ];
+  h+='<div style="display:flex;height:28px;border-radius:8px;overflow:hidden;margin-bottom:12px">';
+  for(var i=0;i<categories.length;i++){
+    var c=categories[i],w=d.target>0?(c.val/d.target*100):0;
+    if(w>0)h+='<div style="width:'+w+'%;background:'+c.color+';display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#070b12;min-width:2px" title="'+c.label+': '+J(c.val)+'">'+(w>8?(c.val/1000).toFixed(0)+'k':'')+'</div>';
+  }
+  h+='</div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:12px">';
+  for(var i=0;i<categories.length;i++){
+    var c=categories[i],pct=d.target>0?((c.val/d.target)*100).toFixed(0):0;
+    h+='<div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:8px;height:8px;border-radius:2px;background:'+c.color+'"></div><span style="color:var(--tx2)">'+c.label+'</span><span class="mono" style="font-weight:700">'+pct+'%</span></div>';
+  }
+  h+='</div></div>';
+
+  // Detail table
+  h+='<div class="card section">';
+  h+='<table class="tbl"><thead><tr><th>カテゴリ</th><th>項目</th><th class="r">設定金額</th><th>2025年比の改善ポイント</th></tr></thead><tbody>';
+
+  // Row helper
+  function lifeRow(cat,item,val,key,note,y2025val){
+    var diff=y2025val?val-y2025val:0;
+    var diffStr=y2025val?(diff<=0?'<span style="color:var(--ok)">▼'+J(Math.abs(diff))+'</span>':'<span style="color:var(--ng)">▲'+J(diff)+'</span>'):'';
+    var r='<tr><td style="font-weight:700">'+cat+'</td><td style="color:var(--tx2)">'+item+'</td>';
+    r+='<td class="r"><input class="sim-input" style="width:100px" type="number" value="'+val+'" onchange="updateLife(\''+key+'\',this.value)" onfocus="this.select()"></td>';
+    r+='<td style="font-size:11px"><span style="color:var(--tx2)">'+note+'</span> '+diffStr+'</td></tr>';
+    return r;
+  }
+
+  h+=lifeRow('住居・負債','家賃・借金返済',d.rent+d.loan,'_rent_loan','削れない固定費（家賃'+J(d.rent)+' + 返済'+J(d.loan)+'）',77477+28020);
+  h+=lifeRow('通信・インフラ','携帯・光熱費',d.phone+d.utility,'_phone_util','携帯を1万円に。光熱費を1.5万円に抑える。',51630);
+  h+=lifeRow('事業サブスク','Adobe, Claude等',d.subs,'subs','Claude（1.5万）を含め、必要なツールを厳選。',27001);
+  h+=lifeRow('食費・日用品','生活費全般',d.food,'food','1日2,000円。外食を減らし、コンビニ利用を最小化。',88024);
+  // Buffer row
+  h+='<tr style="background:var(--glass)"><td style="font-weight:700;color:var(--wn)">事業・交際費</td>';
+  h+='<td style="color:var(--tx2)">カフェ・移動・予備</td>';
+  h+='<td class="r mono" style="font-weight:800;color:'+bufferColor+'">'+J(buffer)+'</td>';
+  h+='<td style="font-size:11px"><span style="font-weight:700;color:var(--wn)">ここが重要。</span><span style="color:var(--tx2)"> 打ち合わせや予備費のバッファ。</span></td></tr>';
+  // Total
+  h+='<tr style="border-top:2px solid var(--bd)"><td style="font-weight:800;font-size:13px" colspan="2">合計</td>';
+  h+='<td class="r mono" style="font-weight:800;font-size:15px;color:var(--ac)">'+J(d.target)+'</td>';
+  var cutAmt=y2025life-d.target;
+  h+='<td style="font-size:12px;font-weight:700;color:'+(cutAmt>0?'var(--ok)':'var(--ng)')+'">月間'+J(Math.abs(cutAmt))+(cutAmt>0?'のコストカット達成':'の増加')+'</td></tr>';
+  h+='</tbody></table></div>';
+
+  // 2025 comparison chart
+  h+='<div class="grid-2 section">';
+  h+='<div class="card"><div class="card-title">2025年実績 vs 2026年目標</div><div style="height:260px"><canvas id="ch-life-compare"></canvas></div></div>';
+  h+='<div class="card"><div class="card-title">手取りシミュレーション</div>';
+
+  // Salary → take home → spending → savings flow
+  var salaryOptions=[300000,400000,500000,600000];
+  h+='<table class="tbl"><thead><tr><th>役員報酬</th><th class="r">手取り目安</th><th class="r">生活費後</th><th>余力</th></tr></thead><tbody>';
+  for(var i=0;i<salaryOptions.length;i++){
+    var sal=salaryOptions[i],take=Math.round(sal*0.78),remaining=take-d.target;
+    var rc=remaining>=0?'var(--ok)':'var(--ng)';
+    var rec=sal===500000;
+    h+='<tr'+(rec?' style="background:var(--acG)"':'')+'><td style="font-weight:'+(rec?'800':'500')+'">'+J(sal)+(rec?' ★':'')+'</td>';
+    h+='<td class="r mono">'+J(take)+'</td>';
+    h+='<td class="r mono" style="color:'+rc+'">'+J(remaining)+'</td>';
+    h+='<td style="font-size:10px;color:'+rc+'">'+(remaining>=0?'月'+J(remaining)+'貯蓄可':'⚠ 不足')+'</td></tr>';
+  }
+  h+='</tbody></table>';
+  h+='<div style="margin-top:12px;padding:10px;background:var(--glass);border-radius:8px;font-size:10px;color:var(--tx2)">💡 役員報酬¥50万（手取約¥39万）なら、生活費'+J(d.target)+'を差し引いても月'+J(Math.round(500000*0.78)-d.target)+'の貯蓄余力。年間'+J((Math.round(500000*0.78)-d.target)*12)+'の資産形成が可能。</div>';
+  h+='</div></div>';
+
+  return h;
+}
+
+function updateLife(key,val){
+  var v=parseFloat(val)||0;
+  if(key==='_rent_loan'){lifeData.rent=Math.round(v*0.734);lifeData.loan=v-lifeData.rent;}
+  else if(key==='_phone_util'){lifeData.phone=Math.round(v*0.4);lifeData.utility=v-lifeData.phone;}
+  else{lifeData[key]=v;}
+  try{localStorage.setItem('bf-life',JSON.stringify(lifeData));}catch(e){}
   renderContent();
 }
 
@@ -619,6 +753,20 @@ function initCharts(){
 
   // Status
   var stEl=document.getElementById('ch-status');
+
+  // Life comparison chart
+  var lcEl=document.getElementById('ch-life-compare');
+  if(lcEl){
+    destroyChart('ch-life-compare');
+    var ld=lifeData;
+    chartInstances['ch-life-compare']=new Chart(lcEl,{type:'bar',data:{
+      labels:['住居・負債','通信・インフラ','サブスク','食費・日用品','事業・交際費'],
+      datasets:[
+        {label:'2025年実績',data:[77477+28020,51630,27001,88024,10964],backgroundColor:isDark?'rgba(251,113,133,.4)':'rgba(225,29,72,.3)',borderRadius:4},
+        {label:'2026年目標',data:[ld.rent+ld.loan,ld.phone+ld.utility,ld.subs,ld.food,Math.max(0,ld.target-(ld.rent+ld.loan+ld.phone+ld.utility+ld.subs+ld.food))],backgroundColor:isDark?'rgba(94,234,212,.5)':'rgba(41,148,204,.5)',borderRadius:4}
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:fColor,font:{size:10}}}},scales:{y:{ticks:{callback:function(v){return J(v);},color:fColor,font:{family:"'JetBrains Mono'",size:9}},grid:{color:gColor}},x:{ticks:{color:fColor,font:{size:9}},grid:{display:false}}}}});
+  }
   if(stEl){
     destroyChart('ch-status');
     var sc={},sl=[],sd=[],sco=[];

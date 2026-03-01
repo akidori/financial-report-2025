@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2025年度 事業収支 確定報告書（最終版）</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
+  body{font-family:'Noto Sans JP',sans-serif}.text-mono{font-family:'DM Mono','ui-monospace',monospace}
+  .month-header{background:#0f172a;color:#fff}.category-row:hover{background:#f0fdfa;transition:background .15s}
+  .total-row{background:#f8fafc;font-weight:900}
+  .sticky-header{position:sticky;top:0;background:#fff;z-index:30;border-bottom:2px solid #e2e8f0}
+  .fade-in{animation:fadeIn .6s ease-out both}@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .card-hover{transition:transform .2s,box-shadow .2s}.card-hover:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(0,0,0,.08)}
+  @media print{.no-print{display:none}body{background:#fff}.shadow-xl,.shadow-2xl{box-shadow:none;border:1px solid #e2e8f0}}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+<div class="max-w-5xl mx-auto px-4 py-12">
+  <header class="text-center mb-12 fade-in">
+    <div class="inline-block px-4 py-1 rounded-full bg-teal-100 text-teal-700 font-bold text-xs mb-4 tracking-widest uppercase">Final Revised Report 2025</div>
+    <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">2025年度 収支確定レポート</h1>
+    <p class="text-lg text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">全758件を精査・再分類完了。Amazon機材購入・外注費・ツール費を正確に分離。</p>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    <div class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 text-center card-hover fade-in" style="animation-delay:.1s">
+      <div class="text-teal-600 text-xs font-black mb-1 uppercase tracking-widest">年間総入金</div>
+      <div class="text-4xl font-black text-slate-900 text-mono">¥6,223,838</div>
+    </div>
+    <div class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 text-center card-hover fade-in" style="animation-delay:.2s">
+      <div class="text-rose-500 text-xs font-black mb-1 uppercase tracking-widest">年間総支出</div>
+      <div class="text-4xl font-black text-slate-900 text-mono">¥6,034,505</div>
+    </div>
+    <div class="bg-teal-600 rounded-3xl p-8 shadow-2xl text-white text-center card-hover fade-in" style="animation-delay:.3s">
+      <div class="text-teal-100 text-xs font-black mb-1 uppercase tracking-widest">年間収支差額</div>
+      <div class="text-4xl font-black text-mono">+¥189,333</div>
+    </div>
+  </div>
+
+  <section class="mb-12 fade-in" style="animation-delay:.35s">
+    <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-[2.5rem] p-8 md:p-10 text-white">
+      <h2 class="text-lg font-black mb-6 uppercase tracking-tight flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-teal-400 inline-block"></span>再分類の効果</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+        <div><div class="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">初回分類</div>
+          <div class="text-2xl font-black text-rose-400 text-mono">¥2,563,134</div><div class="text-slate-500 text-xs mt-1">42.5%</div></div>
+        <div><div class="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">第1次修正</div>
+          <div class="text-2xl font-black text-amber-400 text-mono">¥1,294,166</div><div class="text-slate-500 text-xs mt-1">21.4%</div></div>
+        <div><div class="text-teal-400 text-xs font-black uppercase tracking-widest mb-2">最終版（今回）</div>
+          <div class="text-2xl font-black text-teal-400 text-mono">¥1,056,295</div>
+          <div class="text-slate-400 text-xs mt-1">17.5% — <span class="text-teal-300 font-black">約150万円を経費に正しく移動</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-12 fade-in" style="animation-delay:.4s">
+    <div class="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-xl border border-slate-100">
+      <h2 class="text-xl font-black mb-8 flex items-center gap-2 uppercase tracking-tight text-slate-700">
+        <span class="w-3 h-3 rounded-full bg-teal-500 inline-block"></span>Annual Category Breakdown</h2>
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4" id="annual-cards"></div>
+    </div>
+  </section>
+
+  <section class="mb-12 fade-in" style="animation-delay:.5s">
+    <div class="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-xl border border-slate-100">
+      <h2 class="text-xl font-black mb-6 flex items-center gap-2 uppercase tracking-tight text-slate-700">
+        <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span>Monthly Cash Flow</h2>
+      <div style="height:320px"><canvas id="monthlyChart"></canvas></div>
+    </div>
+  </section>
+
+  <section class="mb-12 fade-in" style="animation-delay:.55s">
+    <div class="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-xl border border-slate-100">
+      <h2 class="text-xl font-black mb-6 flex items-center gap-2 uppercase tracking-tight text-slate-700">
+        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>Expense Composition</h2>
+      <div class="flex justify-center" style="height:340px"><canvas id="donutChart"></canvas></div>
+    </div>
+  </section>
+
+  <section class="mb-16 fade-in" style="animation-delay:.6s">
+    <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
+      <div class="p-8 bg-slate-900 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div><h2 class="text-2xl font-black tracking-tight uppercase">Full Financial Ledger</h2>
+          <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Final Revised — 758 Transactions / 10 Categories</p></div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead><tr class="sticky-header text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100">
+            <th class="px-6 py-5">カテゴリー</th><th class="px-6 py-5 text-right text-teal-600">入金（＋）</th>
+            <th class="px-6 py-5 text-right text-rose-500">支出（ー）</th><th class="px-6 py-5">主な内容</th>
+          </tr></thead>
+          <tbody id="full-ledger-body" class="text-sm"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center py-8 text-slate-400">
+    <p class="text-[10px] font-black uppercase tracking-[.5em]">© 2025 AKI Business Operations — Final Revised Edition</p>
+  </footer>
+</div>
+<script>
+const ledgerData = [{"m": "1月", "p": 270123, "out": 242129, "rows": [{"c": "入金", "in": 270123, "out": 0, "t": "事業収益・報酬合計"}, {"c": "家賃", "in": 0, "out": 77010, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 19431, "t": "FS *freemake.com, 振込 コ－ヒ－ハウス　（カ, カ）イ－エスジ－"}, {"c": "機材購入費", "in": 0, "out": 14418, "t": "Amazon, ドンキ六本木"}, {"c": "サブスク・ツール費", "in": 0, "out": 11440, "t": "CHIMNEY TOWN, Canva 04387-41837002, Audible"}, {"c": "生活固定費", "in": 0, "out": 46817, "t": "SMBC返済, SMBC返済, １２月分　ａｕ携帯電話料金"}, {"c": "交通費", "in": 0, "out": 10000, "t": "Suica"}, {"c": "生活・娯楽費", "in": 0, "out": 63013, "t": "マクドナルド, ドンキ新川, Amazonプライム"}]}, {"m": "2月", "p": 334863, "out": 350545, "rows": [{"c": "入金", "in": 334863, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 95000, "t": "ナカムラ アキノリ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 1940, "t": "SQ*塩崎悠真, タリーズコーヒー六本木"}, {"c": "機材購入費", "in": 0, "out": 49622, "t": "Amazon"}, {"c": "サブスク・ツール費", "in": 0, "out": 12420, "t": "CHIMNEY TOWN, Canva 04418-63212085, X CORP. PAID FEA..."}, {"c": "生活固定費", "in": 0, "out": 45145, "t": "SMBC返済, SMBC返済, １月分　ａｕ携帯電話料金"}, {"c": "交通費", "in": 0, "out": 1280, "t": "Luup"}, {"c": "生活・娯楽費", "in": 0, "out": 67618, "t": "ラインペイ, ドンキ浅草, セブンイレブン"}]}, {"m": "3月", "p": 450571, "out": 462606, "rows": [{"c": "入金", "in": 450571, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 30000, "t": "シオザキ ユウマ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 4700, "t": "損保ジャパン"}, {"c": "機材購入費", "in": 0, "out": 18185, "t": "ドンキ浅草, Amazon"}, {"c": "サブスク・ツール費", "in": 0, "out": 20489, "t": "CHIMNEY TOWN, Canva 04446-57549542, X CORP. PAID FEA..."}, {"c": "生活固定費", "in": 0, "out": 52054, "t": "SMBC返済, SMBC返済, ２月分　ａｕ携帯電話料金"}, {"c": "交通費", "in": 0, "out": 20918, "t": "Suica, Luup, RATP"}, {"c": "出張・旅行費", "in": 0, "out": 148161, "t": "EPML DE DAB AUT 2327964, FR_MDC8_CAROUSSEL1, SC-BRAS..."}, {"c": "生活・娯楽費", "in": 0, "out": 90579, "t": "Amazonプライム, PayPay, はしば薬局／ＮＦＣ"}]}, {"m": "4月", "p": 387721, "out": 325153, "rows": [{"c": "入金", "in": 387721, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 125800, "t": "オサキ タダシ, シオザキ ユウマ, スズキ ヨシヒロ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 1310, "t": "SQ*塩崎悠真, 振込手数料(税込)"}, {"c": "機材購入費", "in": 0, "out": 13389, "t": "ビックカメラ渋谷, Amazon"}, {"c": "サブスク・ツール費", "in": 0, "out": 14620, "t": "CHIMNEY TOWN, Canva ０４４７７－５１６０１６３６, Notion"}, {"c": "生活固定費", "in": 0, "out": 24015, "t": "３月分　ａｕ携帯電話料金, チョコザップ"}, {"c": "交通費", "in": 0, "out": 15000, "t": "Suica"}, {"c": "生活・娯楽費", "in": 0, "out": 53499, "t": "カード セブン, Amazonプライム, Amazon"}]}, {"m": "5月", "p": 357417, "out": 380609, "rows": [{"c": "入金", "in": 357417, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 165900, "t": "シオザキ ユウマ, オサキ タダシ, スズキ ヨシヒロ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 330, "t": "振込手数料（税込）"}, {"c": "サブスク・ツール費", "in": 0, "out": 16600, "t": "CHIMNEY TOWN, Canva ０４５０７－７３３９６０５８, Notion"}, {"c": "生活固定費", "in": 0, "out": 53959, "t": "４月分　ａｕ携帯電話料金, アコム返済, 振込 SMBCコンシューマー"}, {"c": "交通費", "in": 0, "out": 31250, "t": "Suica, 東武特急券（駅）"}, {"c": "生活・娯楽費", "in": 0, "out": 35050, "t": "Amazonプライム, Amazon, PayPay"}]}, {"m": "6月", "p": 601820, "out": 422532, "rows": [{"c": "入金", "in": 601820, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 176700, "t": "オサキ タダシ, スズキ ヨシヒロ, トモムネ ハヤト"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 2450, "t": "モクシー東京, コメダ珈琲店　ダイワロイネットホテル東, 振込手数料（税込）"}, {"c": "サブスク・ツール費", "in": 0, "out": 36616, "t": "CHIMNEY TOWN, Canva ０４５３８－８０９１８２６３, Frame.io"}, {"c": "生活固定費", "in": 0, "out": 50451, "t": "SMBC返済, SMBC返済, ５月分　ａｕ携帯電話料金"}, {"c": "交通費", "in": 0, "out": 38360, "t": "Luup, ＬＵＵＰ，　ＩＮＣ．, Suica"}, {"c": "生活・娯楽費", "in": 0, "out": 40435, "t": "Amazonプライム, Amazon, ユニクロ／ＮＦＣ"}]}, {"m": "7月", "p": 571110, "out": 411421, "rows": [{"c": "入金", "in": 571110, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 70000, "t": "シオザキ ユウマ, ヤマグチ タクマ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 46814, "t": "SQ*株式会社ＳＮＯＷＢＡＬＬ, サンザ新宿, モクシー東京"}, {"c": "サブスク・ツール費", "in": 0, "out": 23271, "t": "CHIMNEY TOWN, Canva ０４５６８－４９６６５１０６, CHIMNEY TOWNストア"}, {"c": "生活固定費", "in": 0, "out": 51243, "t": "６月分　ａｕ携帯電話料金, SMBC返済, SMBC返済"}, {"c": "交通費", "in": 0, "out": 37278, "t": "Luup, Suica"}, {"c": "生活・娯楽費", "in": 0, "out": 105295, "t": "PayPay, Amazonプライム, ドンキ浅草"}]}, {"m": "8月", "p": 480026, "out": 471016, "rows": [{"c": "入金", "in": 480026, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 123300, "t": "スズキ ヨシヒロ, トモムネ ハヤト"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 32389, "t": "Squad beyond, fiction, Shisha Roost"}, {"c": "サブスク・ツール費", "in": 0, "out": 37931, "t": "CHIMNEY TOWN, Canva ０４５９９－５０６３６６８７, Frame.io"}, {"c": "生活固定費", "in": 0, "out": 50144, "t": "７月分　ａｕ携帯電話料金, SMBC返済, SMBC返済"}, {"c": "交通費", "in": 0, "out": 34770, "t": "Luup, Suica, スカイライナー"}, {"c": "生活・娯楽費", "in": 0, "out": 114962, "t": "PayPay, Amazonプライム, らぁ麺はやし田　浅草"}]}, {"m": "9月", "p": 581012, "out": 632371, "rows": [{"c": "入金", "in": 581012, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 320700, "t": "トモムネ ハヤト, スズキ ヨシヒロ, シオザキ ユウマ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 20754, "t": "振込手数料（税込）, ノート, モクシー東京"}, {"c": "サブスク・ツール費", "in": 0, "out": 51639, "t": "CHIMNEY TOWN, Tenorshare, mojimo"}, {"c": "生活固定費", "in": 0, "out": 51178, "t": "SMBC返済, ８月分　ａｕ携帯電話料金, SMBC返済"}, {"c": "交通費", "in": 0, "out": 35110, "t": "スカイライナー, Luup, Suica"}, {"c": "生活・娯楽費", "in": 0, "out": 75470, "t": "ホテル　ペリ－ゴ－ル, PayPay, Amazonプライム"}]}, {"m": "10月", "p": 866414, "out": 654979, "rows": [{"c": "入金", "in": 866414, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 257250, "t": "トモムネ ハヤト, シオザキ ユウマ, スズキ ヨシヒロ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 26015, "t": "ノート, Caffice, C.STAND　新宿歌舞伎町店"}, {"c": "機材購入費", "in": 0, "out": 45541, "t": "ビックカメラ新宿, Amazon"}, {"c": "サブスク・ツール費", "in": 0, "out": 32685, "t": "CHIMNEY TOWN, Genspark AI, Canva ０４６６０－３６３２４２８５"}, {"c": "生活固定費", "in": 0, "out": 50276, "t": "９月分　ａｕ携帯電話料金, SMBC返済, SMBC返済"}, {"c": "交通費", "in": 0, "out": 43168, "t": "Luup, Suica, JR東日本"}, {"c": "生活・娯楽費", "in": 0, "out": 122524, "t": "PayPay, Amazonプライム, ヨシカミ"}]}, {"m": "11月", "p": 578869, "out": 907430, "rows": [{"c": "入金", "in": 578869, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 271300, "t": "トモムネ ハヤト, スズキ ヨシヒロ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 25159, "t": "ノート, モクシー東京, 快活CLUB　なんば心斎橋店（自動精算機"}, {"c": "機材購入費", "in": 0, "out": 145956, "t": "Amazon, ヨドバシ秋葉原"}, {"c": "サブスク・ツール費", "in": 0, "out": 33044, "t": "CHIMNEY TOWN, Genspark AI, Canva ０４６９１－４８９０９５００"}, {"c": "生活固定費", "in": 0, "out": 81946, "t": "SMBC返済, SMBC返済, １０月分　ａｕ携帯電話料金"}, {"c": "交通費", "in": 0, "out": 91750, "t": "Luup, JR東日本, JR東海"}, {"c": "生活・娯楽費", "in": 0, "out": 180755, "t": "ゴルフクラブ　イースタン, Amazonプライム, PayPay"}]}, {"m": "12月", "p": 743892, "out": 773714, "rows": [{"c": "入金", "in": 743892, "out": 0, "t": "事業収益・報酬合計"}, {"c": "外注費用", "in": 0, "out": 173800, "t": "スズキ ヨシヒロ"}, {"c": "家賃", "in": 0, "out": 77520, "t": "イエラブヤチン"}, {"c": "事業経費", "in": 0, "out": 66724, "t": "ノート, Brain, サンザ新宿"}, {"c": "サブスク・ツール費", "in": 0, "out": 33259, "t": "CHIMNEY TOWN, Genspark AI, Canva ０４７２１－５００９６２１２"}, {"c": "生活固定費", "in": 0, "out": 62342, "t": "SMBC返済, １１月分　ａｕ携帯電話料金, SMBC返済"}, {"c": "交通費", "in": 0, "out": 76618, "t": "Luup, Suica, 開進交通株式会社世田谷営業所／ＮＦＣ"}, {"c": "出張・旅行費", "in": 0, "out": 156356, "t": "こころから, ＥＯＢＡＷＯＯＴ"}, {"c": "資産運用費", "in": 0, "out": 20000, "t": "iDeCo"}, {"c": "生活・娯楽費", "in": 0, "out": 107095, "t": "Amazonプライム, スシロー, Ｓｈｉｐａｒａ　渋谷"}]}];
+
+const annualSummary = {"外注費用":1809750,"家賃":929730,"生活・娯楽費":1056295,"生活固定費":619570,"交通費":435502,"サブスク・ツール費":324014,"出張・旅行費":304517,"機材購入費":287111,"事業経費":248016,"資産運用費":20000};
+const totalOut=6034505;
+const catColors={'入金':{dot:'bg-teal-500'},'外注費用':{dot:'bg-orange-400'},'家賃':{dot:'bg-slate-500'},'事業経費':{dot:'bg-blue-400'},'機材購入費':{dot:'bg-violet-400'},'サブスク・ツール費':{dot:'bg-pink-400'},'生活固定費':{dot:'bg-amber-400'},'交通費':{dot:'bg-cyan-400'},'出張・旅行費':{dot:'bg-indigo-400'},'資産運用費':{dot:'bg-emerald-400'},'生活・娯楽費':{dot:'bg-rose-400'}};
+const catIcons={'外注費用':'👥','家賃':'🏠','生活・娯楽費':'🛍️','生活固定費':'📱','交通費':'🚃','出張・旅行費':'✈️','事業経費':'💼','サブスク・ツール費':'🔧','機材購入費':'📷','資産運用費':'📈'};
+const dColors=['#fb923c','#64748b','#f43f5e','#f59e0b','#06b6d4','#ec4899','#6366f1','#8b5cf6','#3b82f6','#10b981'];
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const ce=document.getElementById('annual-cards');
+  Object.entries(annualSummary).forEach(([c,v],i)=>{const p=((v/totalOut)*100).toFixed(1);const d=document.createElement('div');d.className='p-5 bg-slate-50 rounded-2xl border border-slate-100 card-hover';d.innerHTML=`<div class="flex items-center gap-2 mb-2"><span class="text-lg">${catIcons[c]||'📊'}</span><span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${c}</span></div><div class="text-xl font-black text-slate-800 text-mono">¥${v.toLocaleString()}</div><div class="mt-2 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${p}%;background:${dColors[i]}"></div></div><div class="text-[10px] text-slate-400 font-bold mt-1">${p}%</div>`;ce.appendChild(d)});
+
+  new Chart(document.getElementById('monthlyChart').getContext('2d'),{type:'bar',data:{labels:ledgerData.map(d=>d.m),datasets:[{label:'入金',data:ledgerData.map(d=>d.p),backgroundColor:'rgba(20,184,166,.7)',borderRadius:6},{label:'支出',data:ledgerData.map(d=>d.out),backgroundColor:'rgba(244,63,94,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{family:"'Noto Sans JP'",weight:'bold',size:11}}}},scales:{y:{ticks:{callback:v=>`¥${(v/10000).toFixed(0)}万`,font:{family:"'DM Mono'",size:10}},grid:{color:'rgba(0,0,0,.04)'}},x:{ticks:{font:{family:"'Noto Sans JP'",weight:'bold',size:11}},grid:{display:false}}}}});
+
+  new Chart(document.getElementById('donutChart').getContext('2d'),{type:'doughnut',data:{labels:Object.keys(annualSummary),datasets:[{data:Object.values(annualSummary),backgroundColor:dColors,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{family:"'Noto Sans JP'",size:11,weight:'bold'},padding:12,usePointStyle:true}},tooltip:{callbacks:{label:c=>`${c.label}: ¥${c.parsed.toLocaleString()} (${((c.parsed/totalOut)*100).toFixed(1)}%)`}}}}});
+
+  const b=document.getElementById('full-ledger-body');
+  ledgerData.forEach(mi=>{const df=mi.p-mi.out;const ds=df>=0?'+':'';const dc=df>=0?'text-teal-400':'text-rose-400';
+    const h=document.createElement('tr');h.className='month-header';h.innerHTML=`<td colspan="2" class="px-6 py-4 font-black tracking-tight text-lg uppercase">${mi.m}</td><td class="px-6 py-4 text-right"><span class="text-xs font-bold ${dc} text-mono">${ds}¥${df.toLocaleString()}</span></td><td class="px-6 py-4 text-right text-[10px] text-slate-500 font-bold uppercase tracking-widest">Income: ¥${mi.p.toLocaleString()}</td>`;b.appendChild(h);
+    mi.rows.forEach(r=>{const ii=r.c==='入金';const cc=catColors[r.c]||{dot:'bg-slate-300'};const t=document.createElement('tr');t.className='border-b border-slate-50 category-row';t.innerHTML=`<td class="px-6 py-3.5 font-bold text-slate-700 text-xs tracking-tight"><span class="inline-block w-2 h-2 rounded-full mr-2 ${cc.dot}"></span>${r.c}</td><td class="px-6 py-3.5 text-right font-black ${ii?'text-teal-600':'text-slate-200'} text-mono text-sm">${r.in>0?'¥'+r.in.toLocaleString():'-'}</td><td class="px-6 py-3.5 text-right font-black ${!ii?'text-rose-500':'text-slate-200'} text-mono text-sm">${r.out>0?'¥'+r.out.toLocaleString():'-'}</td><td class="px-6 py-3.5 text-slate-400 text-[11px] font-medium leading-tight truncate max-w-xs">${r.t}</td>`;b.appendChild(t)});
+    const s=document.createElement('tr');s.className='total-row border-b-4 border-slate-200';s.innerHTML=`<td class="px-6 py-3 text-[10px] uppercase font-black text-slate-400">Balance</td><td class="px-6 py-3 text-right text-sm font-black text-teal-600 text-mono">¥${mi.p.toLocaleString()}</td><td class="px-6 py-3 text-right text-sm font-black text-rose-500 text-mono">¥${mi.out.toLocaleString()}</td><td class="px-6 py-3 text-right text-xs font-black ${df>=0?'text-teal-600':'text-rose-500'} text-mono">${ds}¥${Math.abs(df).toLocaleString()}</td>`;b.appendChild(s)});
+  const g=document.createElement('tr');g.className='bg-slate-900 text-white';g.innerHTML=`<td class="px-6 py-5 text-sm uppercase font-black tracking-tight">年間合計</td><td class="px-6 py-5 text-right text-lg font-black text-teal-400 text-mono">¥6,223,838</td><td class="px-6 py-5 text-right text-lg font-black text-rose-400 text-mono">¥6,034,505</td><td class="px-6 py-5 text-right text-lg font-black text-teal-300 text-mono">+¥189,333</td>`;b.appendChild(g)});
+</script>
+</body></html>
